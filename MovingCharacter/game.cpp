@@ -45,8 +45,6 @@ void Game::CheckEvents() {
             window.setView(sf::View(sf::FloatRect({0.f, 0.f}, taille)));
 
         }
-
-        // player inputs
     }
 }
 

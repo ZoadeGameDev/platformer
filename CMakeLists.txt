@@ -6,4 +6,5 @@ set(CMAKE_CXX_STANDARD 23)
 find_package(SFML COMPONENTS Audio Graphics Window System  CONFIG REQUIRED)
 
 add_subdirectory(MovingCharacter)
+add_subdirectory(SquareOnMouse)
 add_subdirectory(ShowingInputs)
