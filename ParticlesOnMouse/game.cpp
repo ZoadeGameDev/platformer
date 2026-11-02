@@ -5,7 +5,7 @@
 #include "game.h"
 
 // public
-Particle particle;
+ParticleManager particle_manager;
 sf::Clock watch;
 
 void Game::BeginWindow() {
@@ -20,12 +20,12 @@ void Game::Loop() {
         CheckEvents();
 
         // MOVE PARTICLES
-        particle.SpawnParticleAtMouse(window);
-        //particle.Fall(dt);
+        particle_manager.SpawnParticleAtMouse(window);
+        particle_manager.Fall(dt);
 
         window.clear(sf::Color::Black);
         // DRAW PARTICLES
-        particle.Draw(window);
+        particle_manager.Draw(window);
         window.display();
     }
 }

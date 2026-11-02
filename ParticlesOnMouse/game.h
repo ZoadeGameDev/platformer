@@ -6,7 +6,7 @@
 #define SFML_AND_VARIOUS_TEST_GAME_H
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
-#include "particle.h"
+#include "particle_manager.h"
 
 class Game {
 public:

@@ -1,7 +1,8 @@
 add_executable(ParticlesOnMouse main.cpp
         game.cpp
         game.h
-        particle.cpp
+        particle_manager.cpp
+        particle_manager.h
         particle.h
 )
 
