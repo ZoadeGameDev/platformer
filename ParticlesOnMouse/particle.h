@@ -8,7 +8,7 @@
 
 struct Particle {
     sf::Vector2f position_;
-    sf::Vector2f velocity_;
+    sf::Color color_;
     bool active_ = false;
 
 };
