@@ -9,6 +9,7 @@
 #include <SFML/System.hpp>
 #include <box2d/box2d.h>
 #include "physicalobject.h"
+#include "entity.h"
 
 class Game {
 public:

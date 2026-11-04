@@ -9,6 +9,7 @@ sf::Clock watch;
 b2WorldDef def = b2DefaultWorldDef();
 PhysicalObject physical_object;
 PhysicalObject platform;
+Entity mario;
 
 void Game::BeginSetup() {
 
@@ -17,6 +18,8 @@ void Game::BeginSetup() {
     monde_ = b2CreateWorld(&def);
     physical_object.Setup(monde_, b2_dynamicBody, {0.f, 5.f});
     platform.Setup(monde_, b2_staticBody, {0.f, 1.f});
+    mario.Setup(sf::Color::Red, {450.f, 300.f}, {50.f, 50.f});
+
 }
 
 void Game::Loop() {
@@ -47,6 +50,7 @@ void Game::Loop() {
 
 
         window.clear(sf::Color::Black);
+        window.draw(mario);
         window.display();
     }
 }
