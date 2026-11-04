@@ -9,7 +9,7 @@
 
 class PhysicalObject {
 public:
-    void Setup(b2WorldId& world);
+    void Setup(b2WorldId& world, b2BodyType type, b2Vec2 position);
     void Update();
 private:
     b2BodyDef def_;
