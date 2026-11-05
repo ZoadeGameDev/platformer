@@ -42,10 +42,46 @@ void PhysicalObject::Setup(b2WorldId& world, b2BodyType type, b2Vec2 position, b
 
 void PhysicalObject::Update() {
     b2Vec2 body_position = b2Body_GetPosition(body_);
-    std::println("x: {}, y : {}", body_position.x, body_position.y);
+    //std::println("x: {}, y : {}", body_position.x, body_position.y);
 }
 
 b2Vec2 PhysicalObject::GetPosition() {
     return b2Body_GetPosition(body_);
+}
+
+b2Vec2 PhysicalObject::GetVelocity() {
+    return b2Body_GetLinearVelocity(body_);
+}
+
+b2Vec2 PhysicalObject::GetAcceleration() {
+    return acceleration_;
+}
+
+void PhysicalObject::SetAcceleration(float step) {
+    acceleration_ = {((GetVelocity().x - old_velocity_.x)/step), ((GetVelocity().y - old_velocity_.y)/step)
+};
+}
+
+void PhysicalObject::SetOldVelocity() {
+    old_velocity_ = GetVelocity();
+}
+
+void PhysicalObject::SetVelocity(std::optional<float> velocity_x, std::optional<float> velocity_y) {
+    float final_velocity_x;
+    float final_velocity_y;
+    if (velocity_x) {
+        final_velocity_x = *velocity_x;
+    }
+    else {
+        final_velocity_x = GetVelocity().x;
+    }
+    if (velocity_y) {
+        final_velocity_y = *velocity_y;
+    }
+    else {
+        final_velocity_y = GetVelocity().y;
+    }
+
+    b2Body_SetLinearVelocity(body_, {final_velocity_x, final_velocity_y});
 }
 

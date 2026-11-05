@@ -30,6 +30,41 @@ void Entity::Update() {
 
 }
 
+void Entity::MoveLeft() {
+    physics_.SetVelocity( -10.f, std::nullopt);
+}
+
+void Entity::MoveRight() {
+    physics_.SetVelocity( 10.f, std::nullopt);
+}
+
+void Entity::Jump() {
+    if ( -0.1f < physics_.GetAcceleration().y && physics_.GetAcceleration().y < 0.1f) {
+        physics_.SetVelocity( std::nullopt, 10);
+
+    }
+}
+
+void Entity::CancelMovement() {
+    physics_.SetVelocity( 0.f, std::nullopt);
+}
+
 void Entity::draw(sf::RenderTarget &target, sf::RenderStates states) const {
     target.draw(shape_, states);
+}
+
+b2Vec2 Entity::GetAcceleration() {
+    return physics_.GetAcceleration();
+}
+
+void Entity::SetAcceleration(float step) {
+    physics_.SetAcceleration(step);
+}
+
+void Entity::SetOldVelocity() {
+    physics_.SetOldVelocity();
+}
+
+void Entity::SetVelocity(std::optional<float> velocity_x, std::optional<float> velocity_y) {
+    physics_.SetVelocity(velocity_x, velocity_y);
 }

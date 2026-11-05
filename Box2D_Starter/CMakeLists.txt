@@ -3,8 +3,8 @@ add_executable(Box2D_Starter main.cpp
         game.h
         physicalobject.cpp
         physicalobject.h
-        Entity.cpp
-        Entity.h
+        entity.cpp
+        entity.h
         constants.h
 )
 

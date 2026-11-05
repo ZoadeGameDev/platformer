@@ -17,7 +17,7 @@ void Game::BeginSetup() {
     monde_ = b2CreateWorld(&def);
     mario.Setup(sf::Color::Red, {450.f, 300.f}, {50.f, 50.f});
     mario.SetupPhysics(monde_, b2_dynamicBody, {20.f, 50.f});
-    platform.Setup(sf::Color::Yellow, {450.f, 700.f}, {200.f, 50.f});
+    platform.Setup(sf::Color::Yellow, {450.f, 700.f}, {1000.f, 50.f});
     platform.SetupPhysics(monde_, b2_staticBody, {20.f, 0.f});
 
 
@@ -39,15 +39,46 @@ void Game::Loop() {
         accumulateur_ += dt;
 
         b2World_Step(monde_, kPas, kSousPas);
-        std::println("Time accumulateur : {} + {}", accumulateur_, dt);
+        //std::println("Time accumulateur : {} + {}", accumulateur_, dt);
+        mario.SetOldVelocity();
          while (accumulateur_ >= kPas)
          {
              b2World_Step(monde_, kPas, kSousPas);
              //std::println("{} , Physics frame !!!!", accumulateur_);
              accumulateur_ -= kPas;
          }
+        mario.SetAcceleration(kPas);
 
-        //platform.Update();
+        // Controller controls
+        // float modifier = 10;
+        // float wanted_x = 0.f;
+        // float wanted_y = 0.f;
+        //bool using_joystick = false;
+
+        const float joystick_x = sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::X);
+        if (std::abs(joystick_x) > 20.f) {
+            // using_joystick = true;
+            // wanted_x = joystick_x * modifier;
+            // std::println("joystick_x = {}", joystick_x);
+            if (joystick_x > 0.f) {
+                mario.MoveRight();
+            }
+            else {
+                mario.MoveLeft();
+            }
+        }
+        else {
+            mario.CancelMovement();
+        }
+        const float joystick_y = sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::Y);
+        if (std::abs(joystick_y) > 20.f) {
+            if (joystick_y < 0.f) {
+                mario.Jump();
+            }
+            // using_joystick = true;
+            // wanted_y = joystick_y * modifier;
+        }
+
         mario.Update();
         platform.Update();
 
