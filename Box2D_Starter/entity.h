@@ -5,16 +5,19 @@
 #ifndef BOX2D_TESTS_ENTITY_H
 #define BOX2D_TESTS_ENTITY_H
 #include <SFML/Graphics.hpp>
+#include "physicalobject.h"
 
 class Entity : public sf:: Drawable {
+public:
+    void Setup(sf::Color color, sf::Vector2f position, sf::Vector2f size);
+    void SetupPhysics(b2WorldId& world, b2BodyType type, b2Vec2 position);
+    // ON PEUT REMPLACER LE DRAW DE WINDOW
+    void Update();
+    void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 private:
     sf::RectangleShape shape_;
     sf::Texture texture_;
-public:
-    void Setup(sf::Color color, sf::Vector2f position, sf::Vector2f size);
-    // ON PEUT REMPLACER LE DRAW DE WINDOW
-    void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
-
+    PhysicalObject physics_;
 };
 
 

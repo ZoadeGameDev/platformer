@@ -4,7 +4,7 @@
 
 #include "physicalobject.h"
 
-void PhysicalObject::Setup(b2WorldId& world, b2BodyType type, b2Vec2 position) {
+void PhysicalObject::Setup(b2WorldId& world, b2BodyType type, b2Vec2 position, b2Vec2 halfsize) {
     // def du corp
     def_ = b2DefaultBodyDef();
     def_.type = type;
@@ -19,7 +19,7 @@ void PhysicalObject::Setup(b2WorldId& world, b2BodyType type, b2Vec2 position) {
     // circle.center = {0.0f, 0.0f};
     // circle.radius = 1.0f;
     // - Carree -
-    b2Polygon square = b2MakeSquare(0.5f);
+    b2Polygon square = b2MakeBox(halfsize.x, halfsize.y);
 
 
     // Matiere
@@ -43,5 +43,9 @@ void PhysicalObject::Setup(b2WorldId& world, b2BodyType type, b2Vec2 position) {
 void PhysicalObject::Update() {
     b2Vec2 body_position = b2Body_GetPosition(body_);
     std::println("x: {}, y : {}", body_position.x, body_position.y);
+}
+
+b2Vec2 PhysicalObject::GetPosition() {
+    return b2Body_GetPosition(body_);
 }
 

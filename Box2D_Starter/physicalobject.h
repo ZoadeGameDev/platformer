@@ -9,8 +9,9 @@
 
 class PhysicalObject {
 public:
-    void Setup(b2WorldId& world, b2BodyType type, b2Vec2 position);
+    void Setup(b2WorldId& world, b2BodyType type, b2Vec2 position, b2Vec2 halfsize);
     void Update();
+    b2Vec2 GetPosition();
 private:
     b2BodyDef def_;
     b2BodyId body_;

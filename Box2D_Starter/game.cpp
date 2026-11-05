@@ -7,18 +7,21 @@
 // public
 sf::Clock watch;
 b2WorldDef def = b2DefaultWorldDef();
-PhysicalObject physical_object;
-PhysicalObject platform;
 Entity mario;
+Entity platform;
 
 void Game::BeginSetup() {
 
     window.create(sf::VideoMode({900, 600}), "Box2D test", sf::Style::Default);
     window.setFramerateLimit(60);
     monde_ = b2CreateWorld(&def);
-    physical_object.Setup(monde_, b2_dynamicBody, {0.f, 5.f});
-    platform.Setup(monde_, b2_staticBody, {0.f, 1.f});
     mario.Setup(sf::Color::Red, {450.f, 300.f}, {50.f, 50.f});
+    mario.SetupPhysics(monde_, b2_dynamicBody, {20.f, 50.f});
+    platform.Setup(sf::Color::Yellow, {450.f, 700.f}, {200.f, 50.f});
+    platform.SetupPhysics(monde_, b2_staticBody, {20.f, 0.f});
+
+
+
 
 }
 
@@ -44,13 +47,15 @@ void Game::Loop() {
              accumulateur_ -= kPas;
          }
 
-        physical_object.Update();
+        //platform.Update();
+        mario.Update();
         platform.Update();
 
 
 
         window.clear(sf::Color::Black);
         window.draw(mario);
+        window.draw(platform);
         window.display();
     }
 }
