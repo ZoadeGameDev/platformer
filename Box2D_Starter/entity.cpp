@@ -19,6 +19,7 @@ void Entity::Setup(sf::Color color, sf::Vector2f position, sf::Vector2f size) {
 
 void Entity::SetupPhysics(b2WorldId& world, b2BodyType type, b2Vec2 position){
     physics_.Setup(world, type, position, {(Conversion::Meter(shape_.getSize().x))/2, (Conversion::Meter(shape_.getSize().y))/2});
+    grounded_.Setup(physics_.GetBodyId(), {(Conversion::Meter(shape_.getSize().x))/2.0f, (Conversion::Meter(shape_.getSize().y))/2.0f});
 }
 
 void Entity::Update() {
@@ -27,6 +28,11 @@ void Entity::Update() {
     newPosition.x = Conversion::Pixels(physics_.GetPosition().x);
     newPosition.y = 600 - Conversion::Pixels(physics_.GetPosition().y);
     shape_.setPosition(newPosition);
+    if (grounded_.HasTouched) {
+        shape_.setFillColor(sf::Color::Green);
+    } else {
+        shape_.setFillColor(sf::Color::Red);
+    }
 
 }
 
@@ -39,9 +45,11 @@ void Entity::MoveRight() {
 }
 
 void Entity::Jump() {
-    if ( -0.1f < physics_.GetAcceleration().y && physics_.GetAcceleration().y < 0.1f) {
+    // if ( -0.1f < physics_.GetAcceleration().y && physics_.GetAcceleration().y < 0.1f) {
+    //     physics_.SetVelocity( std::nullopt, 10);
+    // }
+    if (grounded_.HasTouched) {
         physics_.SetVelocity( std::nullopt, 10);
-
     }
 }
 

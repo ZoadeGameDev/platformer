@@ -6,6 +6,9 @@ add_executable(Box2D_Starter main.cpp
         entity.cpp
         entity.h
         constants.h
+        sensor.cpp
+        sensor.h
+        contacts.h
 )
 
 target_link_libraries(Box2D_Starter PUBLIC SFML::Graphics box2d::box2d)

@@ -25,6 +25,8 @@ void PhysicalObject::Setup(b2WorldId& world, b2BodyType type, b2Vec2 position, b
     // Matiere
     shape_def_ = b2DefaultShapeDef();
     shape_def_.density = 1.0f;
+    shape_def_.isSensor = false;
+    shape_def_.enableSensorEvents = false;
     shape_def_.material.friction = 0.0f;
     shape_def_.material.restitution = 0.0f;
 
@@ -55,6 +57,10 @@ b2Vec2 PhysicalObject::GetVelocity() {
 
 b2Vec2 PhysicalObject::GetAcceleration() {
     return acceleration_;
+}
+
+b2BodyId PhysicalObject::GetBodyId() {
+    return body_;
 }
 
 void PhysicalObject::SetAcceleration(float step) {

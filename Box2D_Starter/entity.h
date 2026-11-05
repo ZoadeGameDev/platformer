@@ -7,6 +7,7 @@
 #include <SFML/Graphics.hpp>
 #include <print>
 #include "physicalobject.h"
+#include "sensor.h"
 
 class Entity : public sf:: Drawable {
 public:
@@ -31,6 +32,8 @@ private:
     sf::RectangleShape shape_;
     sf::Texture texture_;
     PhysicalObject physics_;
+
+    Sensor grounded_;
 };
 
 

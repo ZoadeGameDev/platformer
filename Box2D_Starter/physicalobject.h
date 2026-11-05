@@ -15,6 +15,9 @@ public:
     b2Vec2 GetPosition();
     b2Vec2 GetVelocity();
     b2Vec2 GetAcceleration();
+
+    b2BodyId GetBodyId();
+
     void SetAcceleration(float step);
     void SetOldVelocity();
     void SetVelocity(std::optional<float> velocity_x, std::optional<float> velocity_y);
