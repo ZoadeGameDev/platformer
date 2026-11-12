@@ -2,8 +2,8 @@
 // Created by zoade on 09.11.2026.
 //
 
-#ifndef BOX2D_TESTS_PHYSICALOBJECT_H
-#define BOX2D_TESTS_PHYSICALOBJECT_H
+#ifndef PLATFORMER_CHARACTER_H
+#define PLATFORMER_CHARACTER_H
 #include <box2d/box2d.h>
 #include <SFML/Graphics.hpp>
 #include "constants.h"
@@ -32,4 +32,4 @@ private:
 };
 
 
-#endif // BOX2D_TESTS_PHYSICALOBJECT_H
+#endif // PLATFORMER_CHARACTER_H

@@ -8,6 +8,7 @@
 b2WorldDef def = b2DefaultWorldDef();
 sf::Clock watch;
 Character character;
+std::array<PlatformBlock, 500> platform_blocks;
 
 void Game::BeginSetup() {
     // Window Setup
@@ -16,7 +17,11 @@ void Game::BeginSetup() {
     // World setup
     def.gravity = {0.f, -9.81f};
     world_ = b2CreateWorld(&def);
+    // SETUP THE LEVEL
     character.Setup(world_, {Conversion::Meters(900/2), Conversion::Meters(600/2)}, 50.f, 50.f);
+    for (int i = 0; i < platform_blocks.size(); ++i) {
+        platform_blocks[i].Setup(world_, {Conversion::Meters( i * 50), Conversion::Meters(0)}, 50.f);
+    }
 }
 
 void Game::Loop() {
@@ -33,12 +38,20 @@ void Game::Loop() {
             accumulator_ -= kStep_;
         }
 
+        // UPDATE ALL VISUALS
         character.UpdateVisuals();
+        for (PlatformBlock& block : platform_blocks) {
+            block.UpdateVisuals();
+        }
 
 
 
+        // SHOW ALL VISUALS
         window.clear(sf::Color::Black);
         window.draw(character);
+        for (PlatformBlock& block : platform_blocks) {
+            window.draw(block);
+        }
         window.display();
     }
 }
