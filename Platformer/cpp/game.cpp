@@ -7,6 +7,7 @@
 // public
 b2WorldDef def = b2DefaultWorldDef();
 sf::Clock watch;
+Character character;
 
 void Game::BeginSetup() {
     // Window Setup
@@ -15,6 +16,7 @@ void Game::BeginSetup() {
     // World setup
     def.gravity = {0.f, -9.81f};
     world_ = b2CreateWorld(&def);
+    character.Setup(world_, {Conversion::Meters(900/2), Conversion::Meters(600/2)}, 50.f, 50.f);
 }
 
 void Game::Loop() {
@@ -31,10 +33,12 @@ void Game::Loop() {
             accumulator_ -= kStep_;
         }
 
+        character.UpdateVisuals();
+
 
 
         window.clear(sf::Color::Black);
-
+        window.draw(character);
         window.display();
     }
 }

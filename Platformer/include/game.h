@@ -7,6 +7,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <box2d/box2d.h>
+#include "character.h"
 
 class Game {
 public:

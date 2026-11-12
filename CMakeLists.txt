@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 4.3)
-project(box2d_tests)
+project(platformer)
 
 set(CMAKE_CXX_STANDARD 23)
 
