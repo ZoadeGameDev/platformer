@@ -20,7 +20,7 @@ public:
     void Loop();
 
 private:
-    void WindowEvents();
+    void GameEvents();
 
     //void CheckIfWindowClosed(const std::optional<sf::Event> &event);
 

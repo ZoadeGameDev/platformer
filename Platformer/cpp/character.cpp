@@ -53,6 +53,56 @@ void Character::UpdateVisuals() {
     //visual_bottom_circle_.setPosition({newPosition.x, newPosition.y + height_/2});
 }
 
+void Character::SetVelocity(std::optional<float> velocity_x, std::optional<float> velocity_y) {
+    float final_velocity_x;
+    float final_velocity_y;
+    if (velocity_x) {
+        final_velocity_x = *velocity_x;
+    }
+    else {
+        final_velocity_x = b2Body_GetLinearVelocity(body_).x;
+    }
+    if (velocity_y) {
+        final_velocity_y = *velocity_y;
+    }
+    else {
+        final_velocity_y = b2Body_GetLinearVelocity(body_).y;
+    }
+
+    b2Body_SetLinearVelocity(body_, {final_velocity_x, final_velocity_y});
+    std::println("velocity x {}, velocity y {}", final_velocity_x, final_velocity_y);
+}
+
+
+
+void Character::Move(std::optional<sf::Event> event) {
+    // Horizontal Movement (state, all frames)
+    // by default the x is at 0
+    SetVelocity(0, std::nullopt);
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Right)) {
+        SetVelocity(10, std::nullopt);
+    } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Left)) {
+        SetVelocity(-10, std::nullopt);
+    }
+
+    // Vertical Movement (event, once)
+    // jump
+    if (const auto* key = event->getIf<sf::Event::KeyPressed>()) {
+        if (key->scancode == sf::Keyboard::Scancode::Space) {
+            SetVelocity(std::nullopt, 15);
+        }
+    }
+    // cancel jump
+    // if (const auto* key = event->getIf<sf::Event::KeyReleased>()) {
+    //     if (key->scancode == sf::Keyboard::Scancode::Space) {
+    //         if (b2Body_GetLinearVelocity(body_).y > 0.f) {
+    //             SetVelocity(std::nullopt, 0);
+    //         }
+    //     }
+    // }
+}
+
+
 void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const {
     target.draw(visual_rectangle_, states);
     target.draw(visual_top_circle_, states);
