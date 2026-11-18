@@ -2,13 +2,14 @@
 // Created by zoade on 29.10.2026.
 //
 
-#ifndef SFML_AND_VARIOUS_TEST_GAME_H
-#define SFML_AND_VARIOUS_TEST_GAME_H
+#ifndef PLATFORMER_GAME_H
+#define PLATFORMER_GAME_H
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <box2d/box2d.h>
 #include <vector>
 #include "character.h"
+#include "contacts.h"
 #include "platform_block.h"
 
 class Game {
@@ -37,4 +38,4 @@ private:
 };
 
 
-#endif // SFML_AND_VARIOUS_TEST_GAME_H
+#endif // PLATFORMER_TEST_GAME_H

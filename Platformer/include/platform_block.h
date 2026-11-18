@@ -7,6 +7,7 @@
 #include <box2d/box2d.h>
 #include <SFML/Graphics.hpp>
 #include "constants.h"
+#include "sensor.h"
 
 class PlatformBlock : public sf::Drawable {
 public:
@@ -22,8 +23,10 @@ private:
     // Physics
     b2BodyId body_;
     float size_;
+    // Sensor
+    Sensor ground_;
     // Visuals
-    sf::RectangleShape visual_;
+    sf::RectangleShape debug_visual_;
 };
 
 

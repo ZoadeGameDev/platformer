@@ -2,8 +2,8 @@
 // Created by zoade on 04.11.2026.
 //
 
-#ifndef BOX2D_TESTS_CONSTANTS_H
-#define BOX2D_TESTS_CONSTANTS_H
+#ifndef PLATFORMER_CONSTANTS_H
+#define PLATFORMER_CONSTANTS_H
 
 
 class Conversion {
@@ -17,4 +17,4 @@ public:
         return pixels * MetersPerPixels;
     }
 };
-#endif // BOX2D_TESTS_CONSTANTS_H
+#endif // PLATFORMER_CONSTANTS_H

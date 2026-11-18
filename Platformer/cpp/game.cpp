@@ -8,7 +8,6 @@
 b2WorldDef def = b2DefaultWorldDef();
 sf::Clock watch;
 Character character;
-std::array<PlatformBlock, 500> platform_blocks;
 PlatformBlock big_platform_block;
 
 void Game::BeginSetup() {
@@ -17,14 +16,10 @@ void Game::BeginSetup() {
     window.setKeyRepeatEnabled(false);
     window.setFramerateLimit(frame_rate_);
     // World setup
-    def.gravity = {0.f, -9.81f}; // usually -9.81f for gravity
+    def.gravity = {0.f, -20.f}; // usually -9.81f for gravity
     world_ = b2CreateWorld(&def);
     // SETUP THE LEVEL
     character.Setup(world_, {Conversion::Meters(900/2), Conversion::Meters(600/2)}, 50.f, 50.f);
-
-    // for (int i = 0; i < platform_blocks.size(); ++i) {
-    //     platform_blocks[i].Setup(world_, {Conversion::Meters( i * 90), Conversion::Meters(0)}, 50.f);
-    // }
     big_platform_block.Setup(world_, {Conversion::Meters(0), Conversion::Meters(-400)}, 1000.f);
 
 }
@@ -41,6 +36,9 @@ void Game::Loop() {
             b2World_Step(world_, kStep_, kSubStep_);
             accumulator_ -= kStep_;
         }
+        SensorsContact(world_);
+
+        character.CharacterStates();
 
         // UPDATE ALL VISUALS
         character.UpdateVisuals();
@@ -50,14 +48,10 @@ void Game::Loop() {
         // }
 
 
-
         // SHOW ALL VISUALS
         window.clear(sf::Color::Black);
-        window.draw(character);
         window.draw(big_platform_block);
-        for (PlatformBlock& block : platform_blocks) {
-            window.draw(block);
-        }
+        window.draw(character);
         window.display();
     }
 }
@@ -81,7 +75,7 @@ void Game::GameEvents() {
         }
 
         // CHARACTER EVENTS
-        character.Move(event);
+        character.CharacterEvents(event);
     }
 }
 

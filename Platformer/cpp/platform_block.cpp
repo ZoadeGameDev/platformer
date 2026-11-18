@@ -26,8 +26,10 @@ void PlatformBlock::Setup(b2WorldId& world, b2Vec2 position, float size){
     // - Base rectangle
     b2CreatePolygonShape(body_, &general_shape_def, &rectangle);
 
-    visual_.setSize({size, size});
-    visual_.setOrigin({size/2, size/2});
+    debug_visual_.setSize({size, size});
+    debug_visual_.setOrigin({size/2, size/2});
+
+    ground_.Setup(body_, size_, size_, 0, 0);
 }
 
 void PlatformBlock::UpdateVisuals() {
@@ -36,10 +38,10 @@ void PlatformBlock::UpdateVisuals() {
     newPosition.y = 600 - Conversion::Pixels(b2Body_GetPosition(body_).y);
     // Debug Visual
     // Put the shapes togethers to form our visuals
-    visual_.setPosition(newPosition);
+   debug_visual_.setPosition(newPosition);
     //visual_bottom_circle_.setPosition({newPosition.x, newPosition.y + height_/2});
 }
 
 void PlatformBlock::draw(sf::RenderTarget &target, sf::RenderStates states) const {
-    target.draw(visual_, states);
+    target.draw(debug_visual_, states);
 }

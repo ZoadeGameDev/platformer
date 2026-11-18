@@ -7,12 +7,17 @@
 // We enter the width and the height in pixels (for ease of use) and then convert it into meters
 void Character::Setup(b2WorldId& world, b2Vec2 position, float width, float height){
     // Physics
+    // variables setup
     width_ = width;
     height_ = height;
+
+    grounded_width_ = width_/1.1f;
+    grounded_height_ = width_/2.0f;
     // Setup Body
     b2BodyDef def = b2DefaultBodyDef();
     def.type =  b2_dynamicBody;
     def.position = position; // Initial position
+    def.fixedRotation = true; // IMPORTANT TO NOT FALL OFF EDGES!!!!!!!!!! HAD TO LOOK IT UP
     body_ = b2CreateBody(world, &def);
 
     // General Material for the whole body
@@ -39,6 +44,9 @@ void Character::Setup(b2WorldId& world, b2Vec2 position, float width, float heig
     // - Bottom circle
     //b2CreateCircleShape(body_, &general_shape_def, &top_circle);
 
+    // Sensors
+    // grounded_
+    grounded_.Setup(body_, grounded_width_, (grounded_height_), 0, -height_/2);
     SetupDebugVisual();
 }
 
@@ -51,7 +59,74 @@ void Character::UpdateVisuals() {
     visual_rectangle_.setPosition(newPosition);
     visual_top_circle_.setPosition({newPosition.x, newPosition.y - height_/2});
     //visual_bottom_circle_.setPosition({newPosition.x, newPosition.y + height_/2});
+    visual_grounded_.setPosition({newPosition.x, newPosition.y + height_/2});
 }
+
+void Character::CharacterStates() {
+    // Horizontal Movement (state, all frames)
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Right)) {
+        if (b2Body_GetLinearVelocity(body_).x < 0.f) {
+            SetVelocity(0,std::nullopt );
+        }
+        AddVelocity(speed_, std::nullopt, max_speed_, max_speed_);
+    } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Left)) {
+        if (b2Body_GetLinearVelocity(body_).x > 0.f) {
+            SetVelocity(0,std::nullopt );
+        }
+        SubstractVelocity(-speed_, std::nullopt, -max_speed_, -max_speed_);
+    } else {
+        // by default the x velocity is at 0
+        SetVelocity(0,std::nullopt );
+    }
+
+    // Better Gravity
+    float current_y_vel = b2Body_GetLinearVelocity(body_).y;
+
+    if (current_y_vel < -0.1f) {
+        // FALLING
+        b2Body_SetGravityScale(body_, 2.5f);
+    }
+    else if (current_y_vel > 0.1f && !sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Space)) {
+        // CANCEL CURRENT JUMP
+        b2Body_SetGravityScale(body_, 3.0f);
+    }
+    else {
+        // ON GROUND, JUMPING
+        b2Body_SetGravityScale(body_, 1.0f);
+    }
+
+    if (grounded_.HasTouched) {
+        visual_grounded_.setFillColor(sf::Color::Green);
+    } else {
+        visual_grounded_.setFillColor(sf::Color::Red);
+    }
+
+
+
+
+}
+
+void Character::CharacterEvents(std::optional<sf::Event> event){
+    // Vertical Movement (event, once)
+    // jump
+    if (const auto* key = event->getIf<sf::Event::KeyPressed>()) {
+        if (key->scancode == sf::Keyboard::Scancode::Space) {
+            if (grounded_.HasTouched) {
+                SetVelocity(std::nullopt, 22.5f);
+            }
+        }
+    }
+    // cancel jump
+    if (const auto* key = event->getIf<sf::Event::KeyReleased>()) {
+        if (key->scancode == sf::Keyboard::Scancode::Space) {
+            float current_y_vel = b2Body_GetLinearVelocity(body_).y;
+            if (current_y_vel > 0.f) {
+                SetVelocity(std::nullopt, current_y_vel * 0.35F);
+            }
+        }
+    }
+}
+
 
 void Character::SetVelocity(std::optional<float> velocity_x, std::optional<float> velocity_y) {
     float final_velocity_x;
@@ -70,43 +145,73 @@ void Character::SetVelocity(std::optional<float> velocity_x, std::optional<float
     }
 
     b2Body_SetLinearVelocity(body_, {final_velocity_x, final_velocity_y});
-    std::println("velocity x {}, velocity y {}", final_velocity_x, final_velocity_y);
 }
 
-
-
-void Character::Move(std::optional<sf::Event> event) {
-    // Horizontal Movement (state, all frames)
-    // by default the x is at 0
-    SetVelocity(0, std::nullopt);
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Right)) {
-        SetVelocity(10, std::nullopt);
-    } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Left)) {
-        SetVelocity(-10, std::nullopt);
-    }
-
-    // Vertical Movement (event, once)
-    // jump
-    if (const auto* key = event->getIf<sf::Event::KeyPressed>()) {
-        if (key->scancode == sf::Keyboard::Scancode::Space) {
-            SetVelocity(std::nullopt, 15);
+void Character::AddVelocity(std::optional<float> velocity_x, std::optional<float> velocity_y, float max_velocity_x, float max_velocity_y) {
+    float current_velocity_x = b2Body_GetLinearVelocity(body_).x;
+    float current_velocity_y = b2Body_GetLinearVelocity(body_).y;
+    std::optional<float> final_velocity_x;
+    std::optional<float> final_velocity_y;
+    if (velocity_x) {
+        final_velocity_x = current_velocity_x + velocity_x.value();
+        if (final_velocity_x > max_velocity_x) {
+            final_velocity_x = max_velocity_x;
         }
     }
-    // cancel jump
-    // if (const auto* key = event->getIf<sf::Event::KeyReleased>()) {
-    //     if (key->scancode == sf::Keyboard::Scancode::Space) {
-    //         if (b2Body_GetLinearVelocity(body_).y > 0.f) {
-    //             SetVelocity(std::nullopt, 0);
-    //         }
-    //     }
-    // }
+    else {
+        final_velocity_x = std::nullopt;
+    }
+
+    if (velocity_y) {
+        final_velocity_y = current_velocity_y + velocity_y.value();
+        if (final_velocity_y > max_velocity_y) {
+            final_velocity_y = max_velocity_y;
+        }
+    }
+    else {
+        final_velocity_y = std::nullopt;
+    }
+
+    SetVelocity(final_velocity_x, final_velocity_y);
+
 }
+
+void Character::SubstractVelocity(std::optional<float> velocity_x, std::optional<float> velocity_y, float max_velocity_x, float max_velocity_y) {
+    float current_velocity_x = b2Body_GetLinearVelocity(body_).x;
+    float current_velocity_y = b2Body_GetLinearVelocity(body_).y;
+    std::optional<float> final_velocity_x;
+    std::optional<float> final_velocity_y;
+    if (velocity_x) {
+        final_velocity_x = current_velocity_x + velocity_x.value();
+        if (final_velocity_x < max_velocity_x) {
+            final_velocity_x = max_velocity_x;
+        }
+    }
+    else {
+        final_velocity_x = std::nullopt;
+    }
+
+    if (velocity_y) {
+        final_velocity_y = current_velocity_y + velocity_y.value();
+        if (final_velocity_y < max_velocity_y) {
+            final_velocity_y = max_velocity_y;
+        }
+    }
+    else {
+        final_velocity_y = std::nullopt;
+    }
+
+    SetVelocity(final_velocity_x, final_velocity_y);
+
+}
+
 
 
 void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const {
     target.draw(visual_rectangle_, states);
     target.draw(visual_top_circle_, states);
     //target.draw(visual_bottom_circle_, states);
+    target.draw(visual_grounded_, states);
 }
 
 // Private
@@ -119,6 +224,12 @@ void Character::SetupDebugVisual() {
     // Circles
     visual_top_circle_.setRadius(width_/2);
     visual_top_circle_.setOrigin({width_/2, width_/2});
+
+    // Sensor
+    // grounded_
+    visual_grounded_.setSize({(grounded_width_), (grounded_height_)});
+    visual_grounded_.setOrigin({(grounded_width_/2), (grounded_height_/2)});
+    visual_grounded_.setFillColor(sf::Color::Red);
 
 //     visual_bottom_circle_.setRadius(width_/2);
 //     visual_bottom_circle_.setOrigin({width_/2, width_/2});

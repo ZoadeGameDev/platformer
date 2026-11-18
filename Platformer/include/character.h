@@ -8,6 +8,7 @@
 #include <SFML/Graphics.hpp>
 #include <print>
 #include "constants.h"
+#include "sensor.h"
 
 
 class Character : public sf::Drawable {
@@ -16,23 +17,31 @@ public:
 
     void UpdateVisuals();
 
-    void SetVelocity(std::optional<float> velocity_x, std::optional<float> velocity_y);
-
-    void AddVelocity(std::optional<float> velocity_x, std::optional<float> velocity_y, float max_velocity_x, float max_velocity_y);
-
-    void Move(std::optional<sf::Event> event);
+    void CharacterStates();
+    void CharacterEvents(std::optional<sf::Event> event);
 
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
 private:
+    void SetVelocity(std::optional<float> velocity_x, std::optional<float> velocity_y);
+
+    void AddVelocity(std::optional<float> velocity_x, std::optional<float> velocity_y, float max_velocity_x, float max_velocity_y);
+    void SubstractVelocity(std::optional<float> velocity_x, std::optional<float> velocity_y, float max_velocity_x, float max_velocity_y);
+
     void SetupDebugVisual();
 
     // Physics
     b2BodyId body_;
     float width_;
     float height_;
-    float actual_x_ = 0;
-    float wanted_x_ = 0;
+    float speed_ = 3.f;
+    float max_speed_ = 10;
+    bool can_jump_ = false;
+    // Sensor
+    Sensor grounded_;
+    float grounded_width_;
+    float grounded_height_;
+    sf::RectangleShape visual_grounded_;
     // Visuals
     // Debug Visuals
     bool show_debug_visuals_ = true;
