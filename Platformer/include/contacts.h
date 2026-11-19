@@ -11,11 +11,13 @@
 bool no_collision = false;
 
 bool SolidContact(b2ShapeId shapeIdA, b2ShapeId shapeIdB, b2Manifold* manifold, void* context) {
-    if (no_collision) {
-        return false;
-    }
+    // if (no_collision) {
+    //     return false;
+    // }
+    //
+    // return true;
 
-    return true;
+    return !no_collision;
 
 }
 
@@ -42,7 +44,10 @@ void SensorsContact(b2WorldId worldId) {
             if (a->name_ == "pass_" && b->name_ == "head_") {
                 no_collision = true;
             }
-            else {
+            else if (a->name_ == "ground_" && b->name_ == "head_") {
+                no_collision = false;
+            }
+            else if ((a->name_ == "pass_" && b->name_ == "grounded_") ||(a->name_ == "ground_" && b->name_ == "grounded_")) {
                 no_collision = false;
             }
         }

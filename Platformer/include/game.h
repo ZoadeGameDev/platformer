@@ -30,7 +30,8 @@ private:
     int frame_rate_ = 60; // Technically frame_rate_limit but oh well...
     // World variables
     b2WorldId world_;
-    const float  kStep_ = 1.f/static_cast<float>(frame_rate_);
+
+    const float kStep_ = 1.f / static_cast<float>(frame_rate_);
     const int kSubStep_ = 4;
     double accumulator_ = 0.0f;
 

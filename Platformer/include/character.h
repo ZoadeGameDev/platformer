@@ -53,6 +53,12 @@ private:
     float head_width_;
     float head_height_;
     sf::RectangleShape visual_head_;
+    // heart_
+    Sensor heart_;
+    float heart_width_;
+    float heart_height_;
+    float heart_offset_y_;
+    sf::RectangleShape visual_heart_;
     // Visuals
     // Debug Visuals
     bool show_debug_visuals_ = true;

@@ -38,9 +38,9 @@ void Game::Loop() {
         // make all steps similars (so it's reproducible), delta time dictates if there should be more or not
         while (accumulator_ >= kStep_) {
             b2World_Step(world_, kStep_, kSubStep_);
+            SensorsContact(world_);
             accumulator_ -= kStep_;
         }
-        SensorsContact(world_);
 
         character.CharacterStates(dt);
 

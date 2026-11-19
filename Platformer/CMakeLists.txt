@@ -10,6 +10,8 @@ add_executable(Platformer main.cpp
         include/contacts.h
         cpp/pass_platform.cpp
         include/pass_platform.h
+        cpp/interactable.cpp
+        include/interactable.h
 )
 
 target_link_libraries(Platformer PUBLIC SFML::Graphics box2d::box2d)
