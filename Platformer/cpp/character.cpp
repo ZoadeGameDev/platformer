@@ -13,6 +13,7 @@ void Character::Setup(b2WorldId& world, b2Vec2 position, float width, float heig
 
     grounded_width_ = width_/1.1f;
     grounded_height_ = width_/2.0f;
+    grounded_offset_y_ = height_/2; // (Problem, the sensor doesn't always work, i try to fix it via offset but it doesn't work)
     // Setup Body
     b2BodyDef def = b2DefaultBodyDef();
     def.type =  b2_dynamicBody;
@@ -46,7 +47,7 @@ void Character::Setup(b2WorldId& world, b2Vec2 position, float width, float heig
 
     // Sensors
     // grounded_
-    grounded_.Setup(body_, grounded_width_, (grounded_height_), 0, -height_/2);
+    grounded_.Setup(body_, grounded_width_, (grounded_height_), 0, -grounded_offset_y_);
     SetupDebugVisual();
 }
 
@@ -59,7 +60,7 @@ void Character::UpdateVisuals() {
     visual_rectangle_.setPosition(newPosition);
     visual_top_circle_.setPosition({newPosition.x, newPosition.y - height_/2});
     //visual_bottom_circle_.setPosition({newPosition.x, newPosition.y + height_/2});
-    visual_grounded_.setPosition({newPosition.x, newPosition.y + height_/2});
+    visual_grounded_.setPosition({newPosition.x, newPosition.y + grounded_offset_y_});
 }
 
 void Character::CharacterStates(double dt) {
@@ -84,12 +85,21 @@ void Character::CharacterStates(double dt) {
     if (jump_buffer_ > 0) {
         jump_buffer_ -= dt;
     }
+    if (coyote_time_ > 0) {
+        coyote_time_ -= dt;
+    }
 
     // Use Buffer
-    if (grounded_.HasTouched && jump_buffer_ > 0) {
+    // COYOTE TIME MUST CHECK IF IT IS ACTUALLY GOING UP OR NOT TO RESET, IF IT DOESN'T, IT CAN DOUBLE JUMP!!!!!!
+    if (grounded_.HasTouched && b2Body_GetLinearVelocity(body_).y < 0.1f) {
+        coyote_time_ = kCoyoteTimeMax_;
+    }
+    std::println("Coyote time {}", coyote_time_);
+    if (coyote_time_ > 0 && jump_buffer_ > 0) {
         // actual jump
         SetVelocity(std::nullopt, 22.5f);
         jump_buffer_ = 0;
+        coyote_time_ = 0;
     }
 
     // Better Gravity

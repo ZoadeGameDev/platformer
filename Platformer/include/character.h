@@ -38,8 +38,11 @@ private:
     float max_speed_ = 10;
     float jump_buffer_ = kJumpBufferMax_;
     const float kJumpBufferMax_ =  0.25f;
+    float coyote_time_ = kCoyoteTimeMax_;
+    const float kCoyoteTimeMax_ = 0.2f;
     // Sensor
     Sensor grounded_;
+    float grounded_offset_y_;
     float grounded_width_;
     float grounded_height_;
     sf::RectangleShape visual_grounded_;

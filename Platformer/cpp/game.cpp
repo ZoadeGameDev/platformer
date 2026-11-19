@@ -20,13 +20,13 @@ void Game::BeginSetup() {
     world_ = b2CreateWorld(&def);
     // SETUP THE LEVEL
     character.Setup(world_, {Conversion::Meters(900/2), Conversion::Meters(600/2)}, 50.f, 50.f);
-    big_platform.Setup(world_, {Conversion::Meters(900/2), Conversion::Meters(0)}, 1000.f, 100.f);
+    big_platform.Setup(world_, {Conversion::Meters(900/2), Conversion::Meters(0)}, 400.f, 100.f);
 
 }
 
 void Game::Loop() {
     while (window.isOpen()) {
-        const float dt = watch.restart().asSeconds(); // Delta Time, to make everything work, no matter the frame rate.
+        const double dt = watch.restart().asSeconds(); // Delta Time, to make everything work, no matter the frame rate.
         // Windows related events
         GameEvents();
         // World Step
