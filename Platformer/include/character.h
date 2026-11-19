@@ -36,10 +36,12 @@ private:
     float height_;
     float speed_ = 3.f;
     float max_speed_ = 10;
+    float jump_speed_ = 20; //22.5f;
     float jump_buffer_ = kJumpBufferMax_;
     const float kJumpBufferMax_ =  0.25f;
     float coyote_time_ = kCoyoteTimeMax_;
     const float kCoyoteTimeMax_ = 0.2f;
+    bool can_jump_;
     // Sensor
     // grounded_
     Sensor grounded_;

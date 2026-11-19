@@ -12,6 +12,7 @@
 #include "contacts.h"
 #include "platform.h"
 #include "pass_platform.h"
+#include "jump_star.h"
 
 class Game {
 public:

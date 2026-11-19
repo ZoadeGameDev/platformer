@@ -6,5 +6,4 @@
 
 void PassPlatform::SetupSensors() {
     pass_.Setup(body_, width_, height_, 0, 0, "pass_");
-    std::println("PASS PLATFORMER MADE");
 }

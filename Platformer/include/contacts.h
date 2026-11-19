@@ -11,14 +11,7 @@
 bool no_collision = false;
 
 bool SolidContact(b2ShapeId shapeIdA, b2ShapeId shapeIdB, b2Manifold* manifold, void* context) {
-    // if (no_collision) {
-    //     return false;
-    // }
-    //
-    // return true;
-
     return !no_collision;
-
 }
 
 void SensorsContact(b2WorldId worldId) {
@@ -32,23 +25,33 @@ void SensorsContact(b2WorldId worldId) {
         auto* a = static_cast<Sensor*>(b2Shape_GetUserData(e.sensorShapeId));
         auto* b = static_cast<Sensor*>(b2Shape_GetUserData(e.visitorShapeId));
 
-        if (a) {
-            std::println("a touched");
-            a->HasTouched  = true;
-        }
-        if (b) {
-            std::println("b touched");
-            b->HasTouched  = true;
-        }
+        // if (a) {
+        //     if (a->name_ != "heart_") {
+        //         std::println("a touched");
+        //         a->HasTouched  = true;
+        //     }
+        // }
+        // if (b) {
+        //     if (b->name_ != "heart_") {
+        //         std::println("b touched");
+        //         b->HasTouched  = true;
+        //     }
+        // }
         if (a && b) {
+            if (a->name_ == "jump_star_" && b->name_ == "heart_") {
+                b->HasTouched  = true;
+            }
             if (a->name_ == "pass_" && b->name_ == "head_") {
                 no_collision = true;
+                b->HasTouched  = true;
             }
             else if (a->name_ == "ground_" && b->name_ == "head_") {
                 no_collision = false;
+                b->HasTouched  = false;
             }
             else if ((a->name_ == "pass_" && b->name_ == "grounded_") ||(a->name_ == "ground_" && b->name_ == "grounded_")) {
                 no_collision = false;
+                b->HasTouched  = true;
             }
         }
 

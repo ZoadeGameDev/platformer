@@ -20,8 +20,8 @@ void Character::Setup(b2WorldId& world, b2Vec2 position, float width, float heig
     head_height_ = width_/2.0f;
     head_offset_y_ = height_/2 + width_/2;
     // Sensor heart_
-    heart_width_ = height_/2.0f;
-    heart_height_ = height_/2.0f;
+    heart_width_ = height_/1.5f;
+    heart_height_ = height_/1.5f;
     heart_offset_y_ = width_/6;
 
     // Setup Body
@@ -109,13 +109,13 @@ void Character::CharacterStates(double dt) {
 
     // Use Buffer
     // COYOTE TIME MUST CHECK IF IT IS ACTUALLY GOING UP OR NOT TO RESET, IF IT DOESN'T, IT CAN DOUBLE JUMP!!!!!!
-    if (grounded_.HasTouched && b2Body_GetLinearVelocity(body_).y < 0.1f) {
+    if (can_jump_ && b2Body_GetLinearVelocity(body_).y < 0.1f) {
         coyote_time_ = kCoyoteTimeMax_;
     }
 
     if (coyote_time_ > 0 && jump_buffer_ > 0) {
         // actual jump
-        SetVelocity(std::nullopt, 22.5f);
+        SetVelocity(std::nullopt, jump_speed_);
         jump_buffer_ = 0;
         coyote_time_ = 0;
     }
@@ -139,6 +139,7 @@ void Character::CharacterStates(double dt) {
     // update Sensor info
     if (grounded_.HasTouched) {
         visual_grounded_.setFillColor(sf::Color::Green);
+        can_jump_ = true;
     } else {
         visual_grounded_.setFillColor(sf::Color::Red);
     }
@@ -148,10 +149,17 @@ void Character::CharacterStates(double dt) {
         visual_head_.setFillColor(sf::Color::Red);
     }
     if (heart_.HasTouched) {
-        visual_heart_.setFillColor(sf::Color::Green);
+        visual_heart_.setFillColor(sf::Color::Blue);
+        can_jump_ = true;
     } else {
-        visual_heart_.setFillColor(sf::Color::Red);
+        visual_heart_.setFillColor(sf::Color::Magenta);
+
     }
+    if (!heart_.HasTouched && !grounded_.HasTouched) {
+        can_jump_ = false;
+    }
+
+    std::println("can_jump {}", can_jump_);
 
 
 
@@ -261,9 +269,9 @@ void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const {
     target.draw(visual_rectangle_, states);
     target.draw(visual_top_circle_, states);
     //target.draw(visual_bottom_circle_, states);
-    target.draw(visual_grounded_, states);
-    target.draw(visual_head_, states);
-    target.draw(visual_heart_, states);
+    // target.draw(visual_grounded_, states);
+    // target.draw(visual_head_, states);
+     target.draw(visual_heart_, states);
 }
 
 // Private
@@ -289,7 +297,7 @@ void Character::SetupDebugVisual() {
     // heart_
     visual_heart_.setSize({(heart_width_), (heart_height_)});
     visual_heart_.setOrigin({(heart_width_/2), (heart_height_/2)});
-    visual_heart_.setFillColor(sf::Color::Red);
+    visual_heart_.setFillColor(sf::Color::Magenta);
 
 //     visual_bottom_circle_.setRadius(width_/2);
 //     visual_bottom_circle_.setOrigin({width_/2, width_/2});

@@ -10,6 +10,7 @@ sf::Clock watch;
 Character character;
 Platform big_platform;
 PassPlatform small_platform;
+JumpStar jump_star;
 
 void Game::BeginSetup() {
     // Window Setup
@@ -25,6 +26,7 @@ void Game::BeginSetup() {
     character.Setup(world_, {Conversion::Meters(900/2), Conversion::Meters(600/2)}, 50.f, 50.f);
     big_platform.Setup(world_, {Conversion::Meters(900/2), Conversion::Meters(0)}, 600.f, 100.f);
     small_platform.Setup(world_, {Conversion::Meters(100), Conversion::Meters(200)}, 200.f, 25.f);
+    jump_star.Setup(world_, {Conversion::Meters(500), Conversion::Meters(200)}, 25.f, 25.f);
 
 }
 
@@ -48,6 +50,7 @@ void Game::Loop() {
         character.UpdateVisuals();
         big_platform.UpdateVisuals();
         small_platform.UpdateVisuals();
+        jump_star.UpdateVisuals();
         // for (PlatformBlock& block : platform_blocks) {
         //     block.UpdateVisuals();
         // }
@@ -57,6 +60,7 @@ void Game::Loop() {
         window.clear(sf::Color::Black);
         window.draw(big_platform);
         window.draw(small_platform);
+        window.draw(jump_star);
         window.draw(character);
         window.display();
     }
