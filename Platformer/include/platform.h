@@ -9,9 +9,9 @@
 #include "constants.h"
 #include "sensor.h"
 
-class PlatformBlock : public sf::Drawable {
+class Platform : public sf::Drawable {
 public:
-    void Setup(b2WorldId& world, b2Vec2 position, float size);
+    void Setup(b2WorldId& world, b2Vec2 position, float width, float height);
 
     void UpdateVisuals();
 
@@ -22,7 +22,8 @@ private:
 
     // Physics
     b2BodyId body_;
-    float size_;
+    float width_;
+    float height_;
     // Sensor
     Sensor ground_;
     // Visuals

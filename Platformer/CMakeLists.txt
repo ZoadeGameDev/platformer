@@ -3,8 +3,8 @@ add_executable(Platformer main.cpp
         include/game.h
         cpp/character.cpp
         include/character.h
-        cpp/platform_block.cpp
-        include/platform_block.h
+        cpp/platform.cpp
+        include/platform.h
         cpp/sensor.cpp
         include/sensor.h
         include/contacts.h

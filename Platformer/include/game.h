@@ -10,7 +10,7 @@
 #include <vector>
 #include "character.h"
 #include "contacts.h"
-#include "platform_block.h"
+#include "platform.h"
 
 class Game {
 public:

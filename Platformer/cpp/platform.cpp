@@ -2,10 +2,11 @@
 // Created by zoade on 12.11.2026.
 //
 
-#include "../include/platform_block.h"
-void PlatformBlock::Setup(b2WorldId& world, b2Vec2 position, float size){
+#include "../include/platform.h"
+void Platform::Setup(b2WorldId& world, b2Vec2 position, float width, float height){
     // Physics
-    size_ = size;
+    width_ = width;
+    height_ = height;
     // Setup Body
     b2BodyDef def = b2DefaultBodyDef();
     def.type =  b2_staticBody;
@@ -20,19 +21,19 @@ void PlatformBlock::Setup(b2WorldId& world, b2Vec2 position, float size){
 
     // Shapes
     // Rectangle
-    b2Polygon rectangle = b2MakeBox(Conversion::Meters(size_/2), Conversion::Meters(size_/2));
+    b2Polygon rectangle = b2MakeBox(Conversion::Meters(width_/2), Conversion::Meters(height_/2));
 
     // Creation
     // - Base rectangle
     b2CreatePolygonShape(body_, &general_shape_def, &rectangle);
 
-    debug_visual_.setSize({size, size});
-    debug_visual_.setOrigin({size/2, size/2});
+    debug_visual_.setSize({width_, height_});
+    debug_visual_.setOrigin({width_/2, height_/2});
 
-    ground_.Setup(body_, size_, size_, 0, 0);
+    ground_.Setup(body_, width_, height_, 0, 0);
 }
 
-void PlatformBlock::UpdateVisuals() {
+void Platform::UpdateVisuals() {
     sf::Vector2f newPosition;
     newPosition.x = Conversion::Pixels(b2Body_GetPosition(body_).x);
     newPosition.y = 600 - Conversion::Pixels(b2Body_GetPosition(body_).y);
@@ -42,6 +43,6 @@ void PlatformBlock::UpdateVisuals() {
     //visual_bottom_circle_.setPosition({newPosition.x, newPosition.y + height_/2});
 }
 
-void PlatformBlock::draw(sf::RenderTarget &target, sf::RenderStates states) const {
+void Platform::draw(sf::RenderTarget &target, sf::RenderStates states) const {
     target.draw(debug_visual_, states);
 }

@@ -17,7 +17,7 @@ public:
 
     void UpdateVisuals();
 
-    void CharacterStates();
+    void CharacterStates(float dt);
     void CharacterEvents(std::optional<sf::Event> event);
 
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override;

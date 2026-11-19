@@ -62,7 +62,7 @@ void Character::UpdateVisuals() {
     visual_grounded_.setPosition({newPosition.x, newPosition.y + height_/2});
 }
 
-void Character::CharacterStates() {
+void Character::CharacterStates(float dt) {
     // Horizontal Movement (state, all frames)
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Right)) {
         if (b2Body_GetLinearVelocity(body_).x < 0.f) {

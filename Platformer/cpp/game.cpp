@@ -8,7 +8,7 @@
 b2WorldDef def = b2DefaultWorldDef();
 sf::Clock watch;
 Character character;
-PlatformBlock big_platform_block;
+Platform big_platform;
 
 void Game::BeginSetup() {
     // Window Setup
@@ -20,7 +20,7 @@ void Game::BeginSetup() {
     world_ = b2CreateWorld(&def);
     // SETUP THE LEVEL
     character.Setup(world_, {Conversion::Meters(900/2), Conversion::Meters(600/2)}, 50.f, 50.f);
-    big_platform_block.Setup(world_, {Conversion::Meters(0), Conversion::Meters(-400)}, 1000.f);
+    big_platform.Setup(world_, {Conversion::Meters(900/2), Conversion::Meters(0)}, 1000.f, 100.f);
 
 }
 
@@ -38,11 +38,11 @@ void Game::Loop() {
         }
         SensorsContact(world_);
 
-        character.CharacterStates();
+        character.CharacterStates(dt);
 
         // UPDATE ALL VISUALS
         character.UpdateVisuals();
-        big_platform_block.UpdateVisuals();
+        big_platform.UpdateVisuals();
         // for (PlatformBlock& block : platform_blocks) {
         //     block.UpdateVisuals();
         // }
@@ -50,7 +50,7 @@ void Game::Loop() {
 
         // SHOW ALL VISUALS
         window.clear(sf::Color::Black);
-        window.draw(big_platform_block);
+        window.draw(big_platform);
         window.draw(character);
         window.display();
     }
