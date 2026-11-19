@@ -41,11 +41,18 @@ private:
     float coyote_time_ = kCoyoteTimeMax_;
     const float kCoyoteTimeMax_ = 0.2f;
     // Sensor
+    // grounded_
     Sensor grounded_;
     float grounded_offset_y_;
     float grounded_width_;
     float grounded_height_;
     sf::RectangleShape visual_grounded_;
+    // head_
+    Sensor head_;
+    float head_offset_y_;
+    float head_width_;
+    float head_height_;
+    sf::RectangleShape visual_head_;
     // Visuals
     // Debug Visuals
     bool show_debug_visuals_ = true;

@@ -17,17 +17,20 @@ public:
 
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
-private:
+protected:
+    virtual void  SetupSensors();
+
     void SetupDebugVisual();
 
     // Physics
     b2BodyId body_;
     float width_;
     float height_;
-    // Sensor
-    Sensor ground_;
     // Visuals
     sf::RectangleShape debug_visual_;
+private:
+    // Sensor
+    Sensor ground_;
 };
 
 

@@ -11,9 +11,15 @@ void Character::Setup(b2WorldId& world, b2Vec2 position, float width, float heig
     width_ = width;
     height_ = height;
 
+    // Sensor grounded_
     grounded_width_ = width_/1.1f;
     grounded_height_ = width_/2.0f;
     grounded_offset_y_ = height_/2; // (Problem, the sensor doesn't always work, i try to fix it via offset but it doesn't work)
+
+    // Sensor head_
+    head_width_ = width_/1.1f;
+    head_height_ = width_/2.0f;
+    head_offset_y_ = height_/2 + width_/2;
     // Setup Body
     b2BodyDef def = b2DefaultBodyDef();
     def.type =  b2_dynamicBody;
@@ -26,6 +32,7 @@ void Character::Setup(b2WorldId& world, b2Vec2 position, float width, float heig
     general_shape_def.density = 1.0f;
     general_shape_def.material.friction = 0.0f;
     general_shape_def.material.restitution = 0.0f; // doesn't bounce.
+    general_shape_def.enablePreSolveEvents = true; // IMPORTANT TO LET US DECIDE HOW COLLISIONS WILL WORK FOR PASS THROUGH PLATFORMS!!!
 
     // Shapes
     // Rectangle
@@ -47,7 +54,9 @@ void Character::Setup(b2WorldId& world, b2Vec2 position, float width, float heig
 
     // Sensors
     // grounded_
-    grounded_.Setup(body_, grounded_width_, (grounded_height_), 0, -grounded_offset_y_);
+    grounded_.Setup(body_, grounded_width_, (grounded_height_), 0, -grounded_offset_y_, "grounded_");
+    // head_
+    head_.Setup(body_, head_width_, (head_height_), 0, head_offset_y_, "head_");
     SetupDebugVisual();
 }
 
@@ -61,6 +70,8 @@ void Character::UpdateVisuals() {
     visual_top_circle_.setPosition({newPosition.x, newPosition.y - height_/2});
     //visual_bottom_circle_.setPosition({newPosition.x, newPosition.y + height_/2});
     visual_grounded_.setPosition({newPosition.x, newPosition.y + grounded_offset_y_});
+    visual_head_.setPosition({newPosition.x, newPosition.y - head_offset_y_});
+
 }
 
 void Character::CharacterStates(double dt) {
@@ -94,7 +105,7 @@ void Character::CharacterStates(double dt) {
     if (grounded_.HasTouched && b2Body_GetLinearVelocity(body_).y < 0.1f) {
         coyote_time_ = kCoyoteTimeMax_;
     }
-    std::println("Coyote time {}", coyote_time_);
+
     if (coyote_time_ > 0 && jump_buffer_ > 0) {
         // actual jump
         SetVelocity(std::nullopt, 22.5f);
@@ -122,6 +133,11 @@ void Character::CharacterStates(double dt) {
         visual_grounded_.setFillColor(sf::Color::Green);
     } else {
         visual_grounded_.setFillColor(sf::Color::Red);
+    }
+    if (head_.HasTouched) {
+        visual_head_.setFillColor(sf::Color::Green);
+    } else {
+        visual_head_.setFillColor(sf::Color::Red);
     }
 
 
@@ -233,6 +249,7 @@ void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const {
     target.draw(visual_top_circle_, states);
     //target.draw(visual_bottom_circle_, states);
     target.draw(visual_grounded_, states);
+    target.draw(visual_head_, states);
 }
 
 // Private
@@ -251,6 +268,10 @@ void Character::SetupDebugVisual() {
     visual_grounded_.setSize({(grounded_width_), (grounded_height_)});
     visual_grounded_.setOrigin({(grounded_width_/2), (grounded_height_/2)});
     visual_grounded_.setFillColor(sf::Color::Red);
+    // head_
+    visual_head_.setSize({(head_width_), (head_height_)});
+    visual_head_.setOrigin({(head_width_/2), (head_height_/2)});
+    visual_head_.setFillColor(sf::Color::Red);
 
 //     visual_bottom_circle_.setRadius(width_/2);
 //     visual_bottom_circle_.setOrigin({width_/2, width_/2});

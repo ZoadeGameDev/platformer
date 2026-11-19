@@ -8,6 +8,16 @@
 #include <print>
 #include "sensor.h"
 
+bool no_collision = false;
+
+bool SolidContact(b2ShapeId shapeIdA, b2ShapeId shapeIdB, b2Manifold* manifold, void* context) {
+    if (no_collision) {
+        return false;
+    }
+
+    return true;
+
+}
 
 void SensorsContact(b2WorldId worldId) {
     const b2SensorEvents sensors = b2World_GetSensorEvents(worldId);
@@ -28,6 +38,15 @@ void SensorsContact(b2WorldId worldId) {
             std::println("b touched");
             b->HasTouched  = true;
         }
+        if (a && b) {
+            if (a->name_ == "pass_" && b->name_ == "head_") {
+                no_collision = true;
+            }
+            else {
+                no_collision = false;
+            }
+        }
+
     }
 
 

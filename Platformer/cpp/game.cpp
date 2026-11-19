@@ -9,6 +9,7 @@ b2WorldDef def = b2DefaultWorldDef();
 sf::Clock watch;
 Character character;
 Platform big_platform;
+PassPlatform small_platform;
 
 void Game::BeginSetup() {
     // Window Setup
@@ -18,9 +19,12 @@ void Game::BeginSetup() {
     // World setup
     def.gravity = {0.f, -20.f}; // usually -9.81f for gravity
     world_ = b2CreateWorld(&def);
+    // SETUP FOR TRAVERSABLE PLATFORMS
+    b2World_SetPreSolveCallback(world_, SolidContact, nullptr);
     // SETUP THE LEVEL
     character.Setup(world_, {Conversion::Meters(900/2), Conversion::Meters(600/2)}, 50.f, 50.f);
-    big_platform.Setup(world_, {Conversion::Meters(900/2), Conversion::Meters(0)}, 400.f, 100.f);
+    big_platform.Setup(world_, {Conversion::Meters(900/2), Conversion::Meters(0)}, 600.f, 100.f);
+    small_platform.Setup(world_, {Conversion::Meters(100), Conversion::Meters(200)}, 200.f, 25.f);
 
 }
 
@@ -43,6 +47,7 @@ void Game::Loop() {
         // UPDATE ALL VISUALS
         character.UpdateVisuals();
         big_platform.UpdateVisuals();
+        small_platform.UpdateVisuals();
         // for (PlatformBlock& block : platform_blocks) {
         //     block.UpdateVisuals();
         // }
@@ -51,6 +56,7 @@ void Game::Loop() {
         // SHOW ALL VISUALS
         window.clear(sf::Color::Black);
         window.draw(big_platform);
+        window.draw(small_platform);
         window.draw(character);
         window.display();
     }

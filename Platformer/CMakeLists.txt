@@ -8,6 +8,8 @@ add_executable(Platformer main.cpp
         cpp/sensor.cpp
         include/sensor.h
         include/contacts.h
+        cpp/pass_platform.cpp
+        include/pass_platform.h
 )
 
 target_link_libraries(Platformer PUBLIC SFML::Graphics box2d::box2d)

@@ -30,7 +30,7 @@ void Platform::Setup(b2WorldId& world, b2Vec2 position, float width, float heigh
     debug_visual_.setSize({width_, height_});
     debug_visual_.setOrigin({width_/2, height_/2});
 
-    ground_.Setup(body_, width_, height_, 0, 0);
+    SetupSensors();
 }
 
 void Platform::UpdateVisuals() {
@@ -41,6 +41,10 @@ void Platform::UpdateVisuals() {
     // Put the shapes togethers to form our visuals
    debug_visual_.setPosition(newPosition);
     //visual_bottom_circle_.setPosition({newPosition.x, newPosition.y + height_/2});
+}
+
+void Platform::SetupSensors() {
+    ground_.Setup(body_, width_, height_, 0, 0, "ground_");
 }
 
 void Platform::draw(sf::RenderTarget &target, sf::RenderStates states) const {

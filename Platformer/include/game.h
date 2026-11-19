@@ -11,11 +11,10 @@
 #include "character.h"
 #include "contacts.h"
 #include "platform.h"
+#include "pass_platform.h"
 
 class Game {
 public:
-
-
     void BeginSetup();
 
     void Loop();
