@@ -17,7 +17,7 @@ public:
 
     void UpdateVisuals();
 
-    void CharacterStates(float dt);
+    void CharacterStates(double dt);
     void CharacterEvents(std::optional<sf::Event> event);
 
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
@@ -36,7 +36,8 @@ private:
     float height_;
     float speed_ = 3.f;
     float max_speed_ = 10;
-    bool can_jump_ = false;
+    float jump_buffer_ = kJumpBufferMax_;
+    const float kJumpBufferMax_ =  0.25f;
     // Sensor
     Sensor grounded_;
     float grounded_width_;

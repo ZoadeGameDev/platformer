@@ -2,8 +2,8 @@
 // Created by zoade on 05.11.2026.
 //
 
-#ifndef BOX2D_TESTS_CONTACTS_H
-#define BOX2D_TESTS_CONTACTS_H
+#ifndef PLATFORMER_CONTACTS_H
+#define PLATFORMER_CONTACTS_H
 #include <box2d/box2d.h>
 #include <print>
 #include "sensor.h"
@@ -51,4 +51,4 @@ void SensorsContact(b2WorldId worldId) {
 
 
 
-#endif // BOX2D_TESTS_CONTACTS_H
+#endif // PLATFORMER_CONTACTS_H

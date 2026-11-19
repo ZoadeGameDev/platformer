@@ -62,7 +62,7 @@ void Character::UpdateVisuals() {
     visual_grounded_.setPosition({newPosition.x, newPosition.y + height_/2});
 }
 
-void Character::CharacterStates(float dt) {
+void Character::CharacterStates(double dt) {
     // Horizontal Movement (state, all frames)
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Right)) {
         if (b2Body_GetLinearVelocity(body_).x < 0.f) {
@@ -77,6 +77,19 @@ void Character::CharacterStates(float dt) {
     } else {
         // by default the x velocity is at 0
         SetVelocity(0,std::nullopt );
+    }
+
+    // Buffer
+    // Modify Buffers (conditions is here to make sure it doesn't go overboard with the values and leak)
+    if (jump_buffer_ > 0) {
+        jump_buffer_ -= dt;
+    }
+
+    // Use Buffer
+    if (grounded_.HasTouched && jump_buffer_ > 0) {
+        // actual jump
+        SetVelocity(std::nullopt, 22.5f);
+        jump_buffer_ = 0;
     }
 
     // Better Gravity
@@ -111,9 +124,7 @@ void Character::CharacterEvents(std::optional<sf::Event> event){
     // jump
     if (const auto* key = event->getIf<sf::Event::KeyPressed>()) {
         if (key->scancode == sf::Keyboard::Scancode::Space) {
-            if (grounded_.HasTouched) {
-                SetVelocity(std::nullopt, 22.5f);
-            }
+            jump_buffer_ = kJumpBufferMax_;
         }
     }
     // cancel jump
