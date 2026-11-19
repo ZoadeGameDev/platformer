@@ -13,16 +13,24 @@ void Character::Setup(b2WorldId& world, b2Vec2 position, float width, float heig
 
     // Sensor grounded_
     grounded_width_ = width_/1.1f;
-    grounded_height_ = width_/2.0f;
+    grounded_height_ = width_/4.0f;
     grounded_offset_y_ = height_/2; // (Problem, the sensor doesn't always work, i try to fix it via offset but it doesn't work)
     // Sensor head_
     head_width_ = width_/1.1f;
     head_height_ = width_/2.0f;
     head_offset_y_ = height_/2 + width_/2;
-    // Sensor heart_
-    heart_width_ = height_/1.5f;
-    heart_height_ = height_/1.5f;
-    heart_offset_y_ = width_/6;
+    // Core Sensors
+    core_width_ = height_/1.5f;
+    core_height_ = height_/1.5f;
+    core_offset_y_ = width_/6;
+    // Sensor jump_detector_
+    jump_detector_width_ = core_width_;
+    jump_detector_height_ = core_height_;
+    jump_detector_offset_y_ = core_offset_y_;
+    // Sensor jump_detector_
+    flag_detector_width_ = core_width_;
+    flag_detector_height_ = core_height_;
+    flag_detector_offset_y_ = core_offset_y_;
 
     // Setup Body
     b2BodyDef def = b2DefaultBodyDef();
@@ -61,8 +69,10 @@ void Character::Setup(b2WorldId& world, b2Vec2 position, float width, float heig
     grounded_.Setup(body_, grounded_width_, (grounded_height_), 0, -grounded_offset_y_, "grounded_");
     // head_
     head_.Setup(body_, head_width_, (head_height_), 0, head_offset_y_, "head_");
-    // heart_
-    heart_.Setup(body_, heart_width_, (heart_height_), 0, heart_offset_y_, "heart_");
+    // jump_detector_
+    jump_detector_.Setup(body_, jump_detector_width_, (jump_detector_height_), 0, jump_detector_offset_y_, "jump_detector_");
+    // flag_detector_
+    flag_detector_.Setup(body_, flag_detector_width_, (flag_detector_height_), 0, flag_detector_offset_y_, "flag_detector_");
     SetupDebugVisual();
 }
 
@@ -77,7 +87,8 @@ void Character::UpdateVisuals() {
     //visual_bottom_circle_.setPosition({newPosition.x, newPosition.y + height_/2});
     visual_grounded_.setPosition({newPosition.x, newPosition.y + grounded_offset_y_});
     visual_head_.setPosition({newPosition.x, newPosition.y - head_offset_y_});
-    visual_heart_.setPosition({newPosition.x, newPosition.y - heart_offset_y_});
+    visual_jump_detector_.setPosition({newPosition.x, newPosition.y - jump_detector_offset_y_});
+    visual_flag_detector_.setPosition({newPosition.x, newPosition.y - flag_detector_offset_y_});
 
 }
 
@@ -148,18 +159,16 @@ void Character::CharacterStates(double dt) {
     } else {
         visual_head_.setFillColor(sf::Color::Red);
     }
-    if (heart_.HasTouched) {
-        visual_heart_.setFillColor(sf::Color::Blue);
+    if (jump_detector_.HasTouched) {
+        visual_jump_detector_.setFillColor(sf::Color::Blue);
         can_jump_ = true;
     } else {
-        visual_heart_.setFillColor(sf::Color::Magenta);
+        visual_jump_detector_.setFillColor(sf::Color::Magenta);
 
     }
-    if (!heart_.HasTouched && !grounded_.HasTouched) {
+    if (!jump_detector_.HasTouched && !grounded_.HasTouched) {
         can_jump_ = false;
     }
-
-    std::println("can_jump {}", can_jump_);
 
 
 
@@ -269,9 +278,9 @@ void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const {
     target.draw(visual_rectangle_, states);
     target.draw(visual_top_circle_, states);
     //target.draw(visual_bottom_circle_, states);
-    // target.draw(visual_grounded_, states);
-    // target.draw(visual_head_, states);
-     target.draw(visual_heart_, states);
+    target.draw(visual_grounded_, states);
+    target.draw(visual_head_, states);
+    target.draw(visual_jump_detector_, states);
 }
 
 // Private
@@ -295,9 +304,9 @@ void Character::SetupDebugVisual() {
     visual_head_.setOrigin({(head_width_/2), (head_height_/2)});
     visual_head_.setFillColor(sf::Color::Red);
     // heart_
-    visual_heart_.setSize({(heart_width_), (heart_height_)});
-    visual_heart_.setOrigin({(heart_width_/2), (heart_height_/2)});
-    visual_heart_.setFillColor(sf::Color::Magenta);
+    visual_jump_detector_.setSize({(jump_detector_width_), (jump_detector_height_)});
+    visual_jump_detector_.setOrigin({(jump_detector_width_/2), (jump_detector_height_/2)});
+    visual_jump_detector_.setFillColor(sf::Color::Magenta);
 
 //     visual_bottom_circle_.setRadius(width_/2);
 //     visual_bottom_circle_.setOrigin({width_/2, width_/2});

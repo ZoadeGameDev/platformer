@@ -13,7 +13,7 @@ class Interactable : public sf::Drawable {
 public:
     void Setup(b2WorldId& world, b2Vec2 position, float width, float height);
 
-    void UpdateVisuals();
+    virtual void UpdateVisuals();
 
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 

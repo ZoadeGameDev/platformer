@@ -14,6 +14,8 @@ add_executable(Platformer main.cpp
         include/interactable.h
         cpp/jump_star.cpp
         include/jump_star.h
+        cpp/flag.cpp
+        include/flag.h
 )
 
 target_link_libraries(Platformer PUBLIC SFML::Graphics box2d::box2d)

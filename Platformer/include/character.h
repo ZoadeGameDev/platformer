@@ -55,12 +55,22 @@ private:
     float head_width_;
     float head_height_;
     sf::RectangleShape visual_head_;
-    // heart_
-    Sensor heart_;
-    float heart_width_;
-    float heart_height_;
-    float heart_offset_y_;
-    sf::RectangleShape visual_heart_;
+    // all "core" detectors
+    float core_width_;
+    float core_height_;
+    float core_offset_y_;
+    // jump_detector_
+    Sensor jump_detector_;
+    float jump_detector_width_;
+    float jump_detector_height_;
+    float jump_detector_offset_y_;
+    sf::RectangleShape visual_jump_detector_;
+    // flag_detector_
+    Sensor flag_detector_;
+    float flag_detector_width_;
+    float flag_detector_height_;
+    float flag_detector_offset_y_;
+    sf::RectangleShape visual_flag_detector_;
     // Visuals
     // Debug Visuals
     bool show_debug_visuals_ = true;

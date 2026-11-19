@@ -13,6 +13,7 @@
 #include "platform.h"
 #include "pass_platform.h"
 #include "jump_star.h"
+#include "flag.h"
 
 class Game {
 public:

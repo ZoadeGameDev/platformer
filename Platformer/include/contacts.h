@@ -38,8 +38,11 @@ void SensorsContact(b2WorldId worldId) {
         //     }
         // }
         if (a && b) {
-            if (a->name_ == "jump_star_" && b->name_ == "heart_") {
+            if (a->name_ == "jump_star_" && b->name_ == "jump_detector_") {
                 b->HasTouched  = true;
+            }
+            if (a->name_ == "flag_" && b->name_ == "flag_detector_") {
+                a->HasTouched  = true;
             }
             if (a->name_ == "pass_" && b->name_ == "head_") {
                 no_collision = true;
@@ -67,10 +70,14 @@ void SensorsContact(b2WorldId worldId) {
         auto* b = static_cast<Sensor*>(b2Shape_GetUserData(e.visitorShapeId));
 
         if (a) {
-            a->HasTouched  = false;
+            if (a->name_ != "flag_") {
+                a->HasTouched  = false;
+            }
         }
         if (b) {
-            b->HasTouched  = false;
+            if (b->name_ != "flag_") {
+                b->HasTouched  = false;
+            }
         }
     }
 
