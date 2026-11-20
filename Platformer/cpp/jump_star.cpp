@@ -6,4 +6,5 @@
 
 void JumpStar::SetupSensors() {
     jump_star_.Setup(body_, width_, height_, 0, 0, "jump_star_");
+    debug_visual_.setFillColor(sf::Color::Blue);
 }

@@ -24,6 +24,8 @@ public:
 
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
+    void SetGameIsRunningFalse();
+
 private:
     void SetVelocity(std::optional<float> velocity_x, std::optional<float> velocity_y);
 
@@ -36,8 +38,8 @@ private:
     b2BodyId body_;
     float width_;
     float height_;
-    float speed_ = 3.f;
-    float max_speed_ = 10;
+    float speed_ = 5.f;
+    float max_speed_ = 15;
     float jump_speed_ = 20; //22.5f;
     float jump_buffer_ = kJumpBufferMax_;
     const float kJumpBufferMax_ =  0.25f;
@@ -46,6 +48,7 @@ private:
     bool can_jump_;
     float check_point_position_x_ = 0;
     float check_point_position_y_ = 0;
+    bool game_is_running_ = true;
     // Sensor
     // grounded_
     Sensor grounded_;

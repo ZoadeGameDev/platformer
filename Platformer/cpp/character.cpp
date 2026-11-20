@@ -91,7 +91,7 @@ void Character::ChangeCheckPointPosition(float x, float y) {
 void Character::UpdateVisuals() {
     sf::Vector2f newPosition;
     newPosition.x = Conversion::Pixels(b2Body_GetPosition(body_).x);
-    newPosition.y = 600 - Conversion::Pixels(b2Body_GetPosition(body_).y);
+    newPosition.y = 1200 - Conversion::Pixels(b2Body_GetPosition(body_).y);
     // Debug Visual
     // Put the shapes togethers to form our visuals
     visual_rectangle_.setPosition(newPosition);
@@ -104,85 +104,94 @@ void Character::UpdateVisuals() {
 }
 
 void Character::CharacterStates(double dt) {
-    // Horizontal Movement (state, all frames)
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Right)) {
-        if (b2Body_GetLinearVelocity(body_).x < 0.f) {
+    std::println("game is running {}", game_is_running_);
+    if (game_is_running_) {
+        // Horizontal Movement (state, all frames)
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Right)) {
+            if (b2Body_GetLinearVelocity(body_).x < 0.f) {
+                SetVelocity(0,std::nullopt );
+            }
+            AddVelocity(speed_, std::nullopt, max_speed_, max_speed_);
+        } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Left)) {
+            if (b2Body_GetLinearVelocity(body_).x > 0.f) {
+                SetVelocity(0,std::nullopt );
+            }
+            SubstractVelocity(-speed_, std::nullopt, -max_speed_, -max_speed_);
+        } else {
+            // by default the x velocity is at 0
             SetVelocity(0,std::nullopt );
         }
-        AddVelocity(speed_, std::nullopt, max_speed_, max_speed_);
-    } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Left)) {
-        if (b2Body_GetLinearVelocity(body_).x > 0.f) {
-            SetVelocity(0,std::nullopt );
+
+        // Buffer
+        // Modify Buffers (conditions is here to make sure it doesn't go overboard with the values and leak)
+        if (jump_buffer_ > 0) {
+            jump_buffer_ -= dt;
         }
-        SubstractVelocity(-speed_, std::nullopt, -max_speed_, -max_speed_);
-    } else {
-        // by default the x velocity is at 0
-        SetVelocity(0,std::nullopt );
-    }
+        if (coyote_time_ > 0) {
+            coyote_time_ -= dt;
+        }
 
-    // Buffer
-    // Modify Buffers (conditions is here to make sure it doesn't go overboard with the values and leak)
-    if (jump_buffer_ > 0) {
-        jump_buffer_ -= dt;
-    }
-    if (coyote_time_ > 0) {
-        coyote_time_ -= dt;
-    }
+        // Use Buffer
+        // COYOTE TIME MUST CHECK IF IT IS ACTUALLY GOING UP OR NOT TO RESET, IF IT DOESN'T, IT CAN DOUBLE JUMP!!!!!!
+        if (can_jump_ && b2Body_GetLinearVelocity(body_).y < 0.1f) {
+            coyote_time_ = kCoyoteTimeMax_;
+        }
 
-    // Use Buffer
-    // COYOTE TIME MUST CHECK IF IT IS ACTUALLY GOING UP OR NOT TO RESET, IF IT DOESN'T, IT CAN DOUBLE JUMP!!!!!!
-    if (can_jump_ && b2Body_GetLinearVelocity(body_).y < 0.1f) {
-        coyote_time_ = kCoyoteTimeMax_;
-    }
+        if (coyote_time_ > 0 && jump_buffer_ > 0) {
+            // actual jump
+            SetVelocity(std::nullopt, jump_speed_);
+            jump_buffer_ = 0;
+            coyote_time_ = 0;
+        }
 
-    if (coyote_time_ > 0 && jump_buffer_ > 0) {
-        // actual jump
-        SetVelocity(std::nullopt, jump_speed_);
-        jump_buffer_ = 0;
-        coyote_time_ = 0;
-    }
+        // Better Gravity
+        float current_y_vel = b2Body_GetLinearVelocity(body_).y;
 
-    // Better Gravity
-    float current_y_vel = b2Body_GetLinearVelocity(body_).y;
+        if (current_y_vel < -0.1f) {
+            // FALLING
+            b2Body_SetGravityScale(body_, 2.5f);
+        }
+        else if (current_y_vel > 0.1f && !sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Space)) {
+            // CANCEL CURRENT JUMP
+            b2Body_SetGravityScale(body_, 3.0f);
+        }
+        else {
+            // ON GROUND, JUMPING
+            b2Body_SetGravityScale(body_, 1.0f);
+        }
 
-    if (current_y_vel < -0.1f) {
-        // FALLING
-        b2Body_SetGravityScale(body_, 2.5f);
-    }
-    else if (current_y_vel > 0.1f && !sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Space)) {
-        // CANCEL CURRENT JUMP
-        b2Body_SetGravityScale(body_, 3.0f);
+        // update Sensor info
+        if (grounded_.HasTouched) {
+            visual_grounded_.setFillColor(sf::Color::Green);
+            can_jump_ = true;
+        } else {
+            visual_grounded_.setFillColor(sf::Color::Red);
+        }
+        if (head_.HasTouched) {
+            visual_head_.setFillColor(sf::Color::Green);
+        } else {
+            visual_head_.setFillColor(sf::Color::Red);
+        }
+        if (jump_detector_.HasTouched || flag_detector_.HasTouched) {
+            visual_core_.setFillColor(sf::Color::Blue);
+            can_jump_ = true;
+        } else {
+            visual_core_.setFillColor(sf::Color::Magenta);
+
+        }
+        if (!jump_detector_.HasTouched && !grounded_.HasTouched && !death_detector_.HasTouched) {
+            can_jump_ = false;
+        }
+
+        if (death_detector_.HasTouched) {
+            b2Body_SetTransform(body_, {check_point_position_x_, check_point_position_y_}, b2Body_GetRotation(body_));
+            // RESET VELOCITY OR THIS WILL BECOME LIKE A PORTAL-LIKE GAME
+            SetVelocity(0,0);
+        }
     }
     else {
-        // ON GROUND, JUMPING
-        b2Body_SetGravityScale(body_, 1.0f);
-    }
-
-    // update Sensor info
-    if (grounded_.HasTouched) {
-        visual_grounded_.setFillColor(sf::Color::Green);
-        can_jump_ = true;
-    } else {
-        visual_grounded_.setFillColor(sf::Color::Red);
-    }
-    if (head_.HasTouched) {
-        visual_head_.setFillColor(sf::Color::Green);
-    } else {
-        visual_head_.setFillColor(sf::Color::Red);
-    }
-    if (jump_detector_.HasTouched || flag_detector_.HasTouched) {
-        visual_core_.setFillColor(sf::Color::Blue);
-        can_jump_ = true;
-    } else {
-        visual_core_.setFillColor(sf::Color::Magenta);
-
-    }
-    if (!jump_detector_.HasTouched && !grounded_.HasTouched && !death_detector_.HasTouched) {
-        can_jump_ = false;
-    }
-
-    if (death_detector_.HasTouched) {
-        b2Body_SetTransform(body_, {check_point_position_x_, check_point_position_y_}, b2Body_GetRotation(body_));
+        b2Body_SetGravityScale(body_, 0.f);
+        SetVelocity(0.f, 0.f);
     }
 
 
@@ -190,24 +199,27 @@ void Character::CharacterStates(double dt) {
 
 }
 
-void Character::CharacterEvents(std::optional<sf::Event> event){
-    // Vertical Movement (event, once)
-    // jump
-    if (const auto* key = event->getIf<sf::Event::KeyPressed>()) {
-        if (key->scancode == sf::Keyboard::Scancode::Space) {
-            jump_buffer_ = kJumpBufferMax_;
+void Character::CharacterEvents(std::optional<sf::Event> event) {
+    if (game_is_running_) {
+        // Vertical Movement (event, once)
+        // jump
+        if (const auto* key = event->getIf<sf::Event::KeyPressed>()) {
+            if (key->scancode == sf::Keyboard::Scancode::Space) {
+                jump_buffer_ = kJumpBufferMax_;
+            }
         }
-    }
-    // cancel jump
-    if (const auto* key = event->getIf<sf::Event::KeyReleased>()) {
-        if (key->scancode == sf::Keyboard::Scancode::Space) {
-            float current_y_vel = b2Body_GetLinearVelocity(body_).y;
-            if (current_y_vel > 0.f) {
-                SetVelocity(std::nullopt, current_y_vel * 0.35F);
+        // cancel jump
+        if (const auto* key = event->getIf<sf::Event::KeyReleased>()) {
+            if (key->scancode == sf::Keyboard::Scancode::Space) {
+                float current_y_vel = b2Body_GetLinearVelocity(body_).y;
+                if (current_y_vel > 0.f) {
+                    SetVelocity(std::nullopt, current_y_vel * 0.35F);
+                }
             }
         }
     }
 }
+
 
 
 void Character::SetVelocity(std::optional<float> velocity_x, std::optional<float> velocity_y) {
@@ -296,6 +308,10 @@ void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const {
     target.draw(visual_grounded_, states);
     target.draw(visual_head_, states);
     target.draw(visual_core_, states);
+}
+
+void Character::SetGameIsRunningFalse() {
+    game_is_running_ = false;
 }
 
 // Private

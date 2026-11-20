@@ -18,6 +18,8 @@ add_executable(Platformer main.cpp
         include/flag.h
         cpp/death_zone.cpp
         include/death_zone.h
+        cpp/win_zone.cpp
+        include/win_zone.h
 )
 
 target_link_libraries(Platformer PUBLIC SFML::Graphics box2d::box2d)

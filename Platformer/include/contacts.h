@@ -38,6 +38,9 @@ void SensorsContact(b2WorldId worldId) {
         //     }
         // }
         if (a && b) {
+            if (a->name_ == "win_zone_" && b->name_ == "flag_detector_") {
+                a->HasTouched  = true;
+            }
             if (a->name_ == "jump_star_" && b->name_ == "jump_detector_") {
                 b->HasTouched  = true;
             }

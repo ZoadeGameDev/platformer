@@ -11,6 +11,8 @@ class DeathZone : public Interactable {
 public:
     void SetupSensors() override;
 
+    bool CheckBool();
+
 private:
     // Sensor
     Sensor death_zone_;

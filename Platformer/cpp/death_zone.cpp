@@ -7,3 +7,7 @@ void DeathZone::SetupSensors() {
     death_zone_.Setup(body_, width_, height_, 0, 0, "death_zone_");
     debug_visual_.setFillColor(sf::Color::Red);
 }
+
+bool DeathZone::CheckBool() {
+    return death_zone_.HasTouched;
+}

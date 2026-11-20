@@ -36,7 +36,7 @@ void Platform::Setup(b2WorldId& world, b2Vec2 position, float width, float heigh
 void Platform::UpdateVisuals() {
     sf::Vector2f newPosition;
     newPosition.x = Conversion::Pixels(b2Body_GetPosition(body_).x);
-    newPosition.y = 600 - Conversion::Pixels(b2Body_GetPosition(body_).y);
+    newPosition.y = 1200 - Conversion::Pixels(b2Body_GetPosition(body_).y);
     // Debug Visual
     // Put the shapes togethers to form our visuals
    debug_visual_.setPosition(newPosition);

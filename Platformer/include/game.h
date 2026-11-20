@@ -15,6 +15,7 @@
 #include "jump_star.h"
 #include "flag.h"
 #include "death_zone.h"
+#include "win_zone.h"
 
 class Game {
 public:
