@@ -107,12 +107,13 @@ void Character::CharacterStates(double dt) {
     std::println("game is running {}", game_is_running_);
     if (game_is_running_) {
         // Horizontal Movement (state, all frames)
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Right)) {
+        const float joystick_x = sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::X); // For Controller
+        if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Right)) || joystick_x > 20.f) {
             if (b2Body_GetLinearVelocity(body_).x < 0.f) {
                 SetVelocity(0,std::nullopt );
             }
             AddVelocity(speed_, std::nullopt, max_speed_, max_speed_);
-        } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Left)) {
+        } else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Left)) || joystick_x < -20.f) {
             if (b2Body_GetLinearVelocity(body_).x > 0.f) {
                 SetVelocity(0,std::nullopt );
             }
@@ -151,7 +152,7 @@ void Character::CharacterStates(double dt) {
             // FALLING
             b2Body_SetGravityScale(body_, 2.5f);
         }
-        else if (current_y_vel > 0.1f && !sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Space)) {
+        else if (current_y_vel > 0.1f && (!sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Space) && !sf::Joystick::isButtonPressed(0, 0))) {
             // CANCEL CURRENT JUMP
             b2Body_SetGravityScale(body_, 3.0f);
         }
@@ -208,9 +209,22 @@ void Character::CharacterEvents(std::optional<sf::Event> event) {
                 jump_buffer_ = kJumpBufferMax_;
             }
         }
+        if (const auto* button = event->getIf<sf::Event::JoystickButtonPressed>()) {
+            if (button->button == 0) {
+                jump_buffer_ = kJumpBufferMax_;
+            }
+        }
         // cancel jump
         if (const auto* key = event->getIf<sf::Event::KeyReleased>()) {
             if (key->scancode == sf::Keyboard::Scancode::Space) {
+                float current_y_vel = b2Body_GetLinearVelocity(body_).y;
+                if (current_y_vel > 0.f) {
+                    SetVelocity(std::nullopt, current_y_vel * 0.35F);
+                }
+            }
+        }
+        if (const auto* button = event->getIf<sf::Event::JoystickButtonReleased>()) {
+            if (button->button == 0) {
                 float current_y_vel = b2Body_GetLinearVelocity(body_).y;
                 if (current_y_vel > 0.f) {
                     SetVelocity(std::nullopt, current_y_vel * 0.35F);
