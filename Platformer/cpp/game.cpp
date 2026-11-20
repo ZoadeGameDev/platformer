@@ -11,7 +11,8 @@ Character character;
 Platform big_platform;
 PassPlatform small_platform;
 JumpStar jump_star;
-Flag flag;
+Flag flag_one;
+DeathZone death_zone;
 
 void Game::BeginSetup() {
     // Window Setup
@@ -28,7 +29,9 @@ void Game::BeginSetup() {
     big_platform.Setup(world_, {Conversion::Meters(900/2), Conversion::Meters(0)}, 600.f, 100.f);
     small_platform.Setup(world_, {Conversion::Meters(100), Conversion::Meters(200)}, 200.f, 25.f);
     jump_star.Setup(world_, {Conversion::Meters(700), Conversion::Meters(200)}, 25.f, 25.f);
-    flag.Setup(world_, {Conversion::Meters(400), Conversion::Meters(200)}, 25.f, 25.f);
+    flag_one.Setup(world_, {Conversion::Meters(400), Conversion::Meters(200)}, 25.f, 25.f);
+    death_zone.Setup(world_, {Conversion::Meters(900/2), Conversion::Meters(-25)}, 1000.f, 100.f);
+
 
 }
 
@@ -53,7 +56,8 @@ void Game::Loop() {
         big_platform.UpdateVisuals();
         small_platform.UpdateVisuals();
         jump_star.UpdateVisuals();
-        flag.UpdateVisuals();
+        flag_one.UpdateVisuals();
+        death_zone.UpdateVisuals();
         // for (PlatformBlock& block : platform_blocks) {
         //     block.UpdateVisuals();
         // }
@@ -61,10 +65,11 @@ void Game::Loop() {
 
         // SHOW ALL VISUALS
         window.clear(sf::Color::Black);
+        window.draw(death_zone);
         window.draw(big_platform);
         window.draw(small_platform);
         window.draw(jump_star);
-        window.draw(flag);
+        window.draw(flag_one);
         window.draw(character);
         window.display();
     }
@@ -88,8 +93,11 @@ void Game::GameEvents() {
             window.setView(sf::View(sf::FloatRect({0.f, 0.f}, taille)));
         }
 
-        // CHARACTER EVENTS
+        // CHARACTER EVENTS AND CHECKPOINT CHECKS
         character.CharacterEvents(event);
+        if (flag_one.CheckBool()) {
+            character.ChangeCheckPointPosition(flag_one.GetPositionX(), flag_one.GetPositionY());
+        }
     }
 }
 

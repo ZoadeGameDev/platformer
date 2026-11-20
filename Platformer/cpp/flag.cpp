@@ -6,6 +6,8 @@
 
 void Flag::SetupSensors() {
     flag_.Setup(body_, width_, height_, 0, 0, "flag_");
+    position_x_ = b2Body_GetPosition(body_).x;
+    position_y_ = b2Body_GetPosition(body_).y;
 }
 
 void Flag::UpdateVisuals() {
@@ -16,4 +18,15 @@ void Flag::UpdateVisuals() {
     else {
         debug_visual_.setFillColor(sf::Color::White);
     }
+}
+
+float Flag::GetPositionX() {
+    return position_x_;
+}
+float Flag::GetPositionY() {
+    return position_y_;
+}
+
+bool Flag::CheckBool() {
+    return flag_.HasTouched;
 }

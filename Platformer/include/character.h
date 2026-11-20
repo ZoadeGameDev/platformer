@@ -15,6 +15,8 @@ class Character : public sf::Drawable {
 public:
     void Setup(b2WorldId& world, b2Vec2 position, float width, float height);
 
+    void ChangeCheckPointPosition(float x, float y);
+
     void UpdateVisuals();
 
     void CharacterStates(double dt);
@@ -42,6 +44,8 @@ private:
     float coyote_time_ = kCoyoteTimeMax_;
     const float kCoyoteTimeMax_ = 0.2f;
     bool can_jump_;
+    float check_point_position_x_ = 0;
+    float check_point_position_y_ = 0;
     // Sensor
     // grounded_
     Sensor grounded_;
@@ -59,18 +63,22 @@ private:
     float core_width_;
     float core_height_;
     float core_offset_y_;
+    sf::RectangleShape visual_core_;
     // jump_detector_
     Sensor jump_detector_;
     float jump_detector_width_;
     float jump_detector_height_;
     float jump_detector_offset_y_;
-    sf::RectangleShape visual_jump_detector_;
     // flag_detector_
     Sensor flag_detector_;
     float flag_detector_width_;
     float flag_detector_height_;
     float flag_detector_offset_y_;
-    sf::RectangleShape visual_flag_detector_;
+    // flag_detector_
+    Sensor death_detector_;
+    float death_detector_width_;
+    float death_detector_height_;
+    float death_detector_offset_y_;
     // Visuals
     // Debug Visuals
     bool show_debug_visuals_ = true;

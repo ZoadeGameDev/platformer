@@ -43,6 +43,10 @@ void SensorsContact(b2WorldId worldId) {
             }
             if (a->name_ == "flag_" && b->name_ == "flag_detector_") {
                 a->HasTouched  = true;
+                b->HasTouched  = true;
+            }
+            if (a->name_ == "death_zone_" && b->name_ == "death_detector_") {
+                b->HasTouched  = true;
             }
             if (a->name_ == "pass_" && b->name_ == "head_") {
                 no_collision = true;

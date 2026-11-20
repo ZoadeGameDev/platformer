@@ -27,10 +27,14 @@ void Character::Setup(b2WorldId& world, b2Vec2 position, float width, float heig
     jump_detector_width_ = core_width_;
     jump_detector_height_ = core_height_;
     jump_detector_offset_y_ = core_offset_y_;
-    // Sensor jump_detector_
+    // Sensor flag_detector_
     flag_detector_width_ = core_width_;
     flag_detector_height_ = core_height_;
     flag_detector_offset_y_ = core_offset_y_;
+    // Sensor death_detector_
+    death_detector_width_ = core_width_;
+    death_detector_height_ = core_height_;
+    death_detector_offset_y_ = core_offset_y_;
 
     // Setup Body
     b2BodyDef def = b2DefaultBodyDef();
@@ -73,8 +77,16 @@ void Character::Setup(b2WorldId& world, b2Vec2 position, float width, float heig
     jump_detector_.Setup(body_, jump_detector_width_, (jump_detector_height_), 0, jump_detector_offset_y_, "jump_detector_");
     // flag_detector_
     flag_detector_.Setup(body_, flag_detector_width_, (flag_detector_height_), 0, flag_detector_offset_y_, "flag_detector_");
+    // death_detector_
+    death_detector_.Setup(body_, death_detector_width_, (death_detector_height_), 0, death_detector_offset_y_, "death_detector_");
     SetupDebugVisual();
 }
+
+void Character::ChangeCheckPointPosition(float x, float y) {
+    check_point_position_x_  = x;
+    check_point_position_y_ = y;
+}
+
 
 void Character::UpdateVisuals() {
     sf::Vector2f newPosition;
@@ -87,8 +99,7 @@ void Character::UpdateVisuals() {
     //visual_bottom_circle_.setPosition({newPosition.x, newPosition.y + height_/2});
     visual_grounded_.setPosition({newPosition.x, newPosition.y + grounded_offset_y_});
     visual_head_.setPosition({newPosition.x, newPosition.y - head_offset_y_});
-    visual_jump_detector_.setPosition({newPosition.x, newPosition.y - jump_detector_offset_y_});
-    visual_flag_detector_.setPosition({newPosition.x, newPosition.y - flag_detector_offset_y_});
+    visual_core_.setPosition({newPosition.x, newPosition.y - jump_detector_offset_y_});
 
 }
 
@@ -159,15 +170,19 @@ void Character::CharacterStates(double dt) {
     } else {
         visual_head_.setFillColor(sf::Color::Red);
     }
-    if (jump_detector_.HasTouched) {
-        visual_jump_detector_.setFillColor(sf::Color::Blue);
+    if (jump_detector_.HasTouched || flag_detector_.HasTouched) {
+        visual_core_.setFillColor(sf::Color::Blue);
         can_jump_ = true;
     } else {
-        visual_jump_detector_.setFillColor(sf::Color::Magenta);
+        visual_core_.setFillColor(sf::Color::Magenta);
 
     }
-    if (!jump_detector_.HasTouched && !grounded_.HasTouched) {
+    if (!jump_detector_.HasTouched && !grounded_.HasTouched && !death_detector_.HasTouched) {
         can_jump_ = false;
+    }
+
+    if (death_detector_.HasTouched) {
+        b2Body_SetTransform(body_, {check_point_position_x_, check_point_position_y_}, b2Body_GetRotation(body_));
     }
 
 
@@ -280,7 +295,7 @@ void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const {
     //target.draw(visual_bottom_circle_, states);
     target.draw(visual_grounded_, states);
     target.draw(visual_head_, states);
-    target.draw(visual_jump_detector_, states);
+    target.draw(visual_core_, states);
 }
 
 // Private
@@ -303,10 +318,10 @@ void Character::SetupDebugVisual() {
     visual_head_.setSize({(head_width_), (head_height_)});
     visual_head_.setOrigin({(head_width_/2), (head_height_/2)});
     visual_head_.setFillColor(sf::Color::Red);
-    // heart_
-    visual_jump_detector_.setSize({(jump_detector_width_), (jump_detector_height_)});
-    visual_jump_detector_.setOrigin({(jump_detector_width_/2), (jump_detector_height_/2)});
-    visual_jump_detector_.setFillColor(sf::Color::Magenta);
+    // core_
+    visual_core_.setSize({(jump_detector_width_), (jump_detector_height_)});
+    visual_core_.setOrigin({(jump_detector_width_/2), (jump_detector_height_/2)});
+    visual_core_.setFillColor(sf::Color::Magenta);
 
 //     visual_bottom_circle_.setRadius(width_/2);
 //     visual_bottom_circle_.setOrigin({width_/2, width_/2});

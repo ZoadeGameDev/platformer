@@ -12,9 +12,16 @@ public:
 
     void UpdateVisuals() override;
 
+    float GetPositionX();
+    float GetPositionY();
+
+    bool CheckBool();
+
 private:
     // Sensor
     Sensor flag_;
+    float position_x_;
+    float position_y_;
 };
 
 
