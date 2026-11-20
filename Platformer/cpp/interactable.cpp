@@ -31,7 +31,6 @@ void Interactable::UpdateVisuals() {
     // Debug Visual
     // Put the shapes togethers to form our visuals
     debug_visual_.setPosition(newPosition);
-    //visual_bottom_circle_.setPosition({newPosition.x, newPosition.y + height_/2});
 }
 
 void Interactable::SetupSensors() {
@@ -39,5 +38,8 @@ void Interactable::SetupSensors() {
 }
 
 void Interactable::draw(sf::RenderTarget &target, sf::RenderStates states) const {
+    // Debug
+    if (Settings::debug_mode_){
     target.draw(debug_visual_, states);
+    }
 }

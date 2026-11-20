@@ -45,8 +45,12 @@ void Platform::UpdateVisuals() {
 
 void Platform::SetupSensors() {
     ground_.Setup(body_, width_, height_, 0, 0, "ground_");
+    debug_visual_.setFillColor(sf::Color(255, 255, 255, 126));
 }
 
 void Platform::draw(sf::RenderTarget &target, sf::RenderStates states) const {
-    target.draw(debug_visual_, states);
+    // Debug
+    if (Settings::debug_mode_) {
+        target.draw(debug_visual_, states);
+    }
 }

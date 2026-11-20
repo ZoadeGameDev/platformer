@@ -7,6 +7,7 @@
 #include <box2d/box2d.h>
 #include <SFML/Graphics.hpp>
 #include "constants.h"
+#include "settings.h"
 #include "sensor.h"
 
 class Platform : public sf::Drawable {

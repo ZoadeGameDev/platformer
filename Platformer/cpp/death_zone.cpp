@@ -5,7 +5,7 @@
 #include "../include/death_zone.h"
 void DeathZone::SetupSensors() {
     death_zone_.Setup(body_, width_, height_, 0, 0, "death_zone_");
-    debug_visual_.setFillColor(sf::Color::Red);
+    debug_visual_.setFillColor(sf::Color(255, 0, 0, 126));
 }
 
 bool DeathZone::CheckBool() {

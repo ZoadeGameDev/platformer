@@ -40,9 +40,9 @@ void Game::BeginSetup() {
     b2World_SetPreSolveCallback(world_, SolidContact, nullptr);
     // SETUP THE LEVEL
     // death window
-    death_zone1.Setup(world_, {Conversion::Meters(0), Conversion::Meters(600)}, 100.f, 2000.f);
+    death_zone1.Setup(world_, {Conversion::Meters(0), Conversion::Meters(600)}, 100.f, 1300.f);
     death_zone2.Setup(world_, {Conversion::Meters(1000), Conversion::Meters(0)}, 2000.f, 100.f);
-    death_zone3.Setup(world_, {Conversion::Meters(2000), Conversion::Meters(600)}, 100.f, 2000.f);
+    death_zone3.Setup(world_, {Conversion::Meters(2000), Conversion::Meters(600)}, 100.f, 1300.f);
     death_zone4.Setup(world_, {Conversion::Meters(1000), Conversion::Meters(1200)}, 2000.f, 100.f);
     death_zone5.Setup(world_, {Conversion::Meters(750), Conversion::Meters(600)}, 1600.f, 50.f);
     // platforms
@@ -63,7 +63,7 @@ void Game::BeginSetup() {
     flag1.Setup(world_, {Conversion::Meters(200), Conversion::Meters(250)}, 25.f, 25.f);
     flag2.Setup(world_, {Conversion::Meters(1875), Conversion::Meters(800)}, 25.f, 25.f);
     // win zone
-    win_zone.Setup(world_, {Conversion::Meters(100), Conversion::Meters(800)}, 35.f, 35.f);
+    win_zone.Setup(world_, {Conversion::Meters(150), Conversion::Meters(800)}, 35.f, 35.f);
     // character
     character.Setup(world_, {Conversion::Meters(325), Conversion::Meters(600/2)}, 50.f, 50.f);
 
@@ -165,6 +165,19 @@ void Game::GameEvents() {
         if (const auto* resized = event->getIf<sf::Event::Resized>()) {
             const sf::Vector2f taille(resized->size);
             window.setView(sf::View(sf::FloatRect({0.f, 0.f}, taille)));
+        }
+
+        // Debug Option
+
+        if (const auto* key = event->getIf<sf::Event::KeyPressed>()) {
+            if (key->scancode == sf::Keyboard::Scancode::K) {
+               Settings::debug_mode_ = !Settings::debug_mode_;
+            }
+        }
+        if (const auto* button = event->getIf<sf::Event::JoystickButtonPressed>()) {
+            if (button->button == 3) {
+                Settings::debug_mode_ = !Settings::debug_mode_;
+            }
         }
 
         // CHARACTER EVENTS

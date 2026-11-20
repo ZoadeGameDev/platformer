@@ -6,7 +6,7 @@
 
 void Flag::SetupSensors() {
     flag_.Setup(body_, width_, height_, 0, 0, "flag_");
-    debug_visual_.setFillColor(sf::Color::Cyan);
+    debug_visual_.setFillColor(sf::Color(160, 120, 255, 126));
     position_x_ = b2Body_GetPosition(body_).x;
     position_y_ = b2Body_GetPosition(body_).y;
 }
@@ -14,7 +14,7 @@ void Flag::SetupSensors() {
 void Flag::UpdateVisuals() {
     Interactable::UpdateVisuals();
     if (flag_.HasTouched){
-        debug_visual_.setFillColor(sf::Color::Yellow);
+        debug_visual_.setFillColor(sf::Color(255, 255, 0, 126));
         }
 }
 

@@ -16,9 +16,11 @@ void Character::Setup(b2WorldId& world, b2Vec2 position, float width, float heig
     grounded_height_ = width_/4.0f;
     grounded_offset_y_ = height_/2; // (Problem, the sensor doesn't always work, i try to fix it via offset but it doesn't work)
     // Sensor head_
-    head_width_ = width_/1.1f;
-    head_height_ = width_/2.0f;
-    head_offset_y_ = height_/2 + width_/2;
+    // We usually keep it small to be safe and not cancel all collision (values at the right)
+    // BUT for the game it's working with big one so... might as well use it
+    head_width_ =  width_*1.1; //width_/1.1f;
+    head_height_ = width_*1.2; //width_/2.0f;
+    head_offset_y_ = height_/2; //height_/2 + width_/2;
     // Core Sensors
     core_width_ = height_/1.5f;
     core_height_ = height_/1.5f;
@@ -104,7 +106,6 @@ void Character::UpdateVisuals() {
 }
 
 void Character::CharacterStates(double dt) {
-    std::println("game is running {}", game_is_running_);
     if (game_is_running_) {
         // Horizontal Movement (state, all frames)
         const float joystick_x = sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::X); // For Controller
@@ -163,21 +164,21 @@ void Character::CharacterStates(double dt) {
 
         // update Sensor info
         if (grounded_.HasTouched) {
-            visual_grounded_.setFillColor(sf::Color::Green);
+            visual_grounded_.setFillColor(sf::Color(0, 255, 0, 126));
             can_jump_ = true;
         } else {
-            visual_grounded_.setFillColor(sf::Color::Red);
+            visual_grounded_.setFillColor(sf::Color(255, 0, 0, 126));
         }
         if (head_.HasTouched) {
-            visual_head_.setFillColor(sf::Color::Green);
+            visual_head_.setFillColor(sf::Color(0, 255, 0, 126));
         } else {
-            visual_head_.setFillColor(sf::Color::Red);
+            visual_head_.setFillColor(sf::Color(255, 0, 0, 126));
         }
         if (jump_detector_.HasTouched || flag_detector_.HasTouched) {
-            visual_core_.setFillColor(sf::Color::Blue);
+            visual_core_.setFillColor(sf::Color(0, 0, 255, 126));
             can_jump_ = true;
         } else {
-            visual_core_.setFillColor(sf::Color::Magenta);
+            visual_core_.setFillColor(sf::Color(255, 100, 255, 126));
 
         }
         if (!jump_detector_.HasTouched && !grounded_.HasTouched && !death_detector_.HasTouched) {
@@ -316,12 +317,15 @@ void Character::SubstractVelocity(std::optional<float> velocity_x, std::optional
 
 
 void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const {
-    target.draw(visual_rectangle_, states);
-    target.draw(visual_top_circle_, states);
-    //target.draw(visual_bottom_circle_, states);
-    target.draw(visual_grounded_, states);
-    target.draw(visual_head_, states);
-    target.draw(visual_core_, states);
+    // Debug
+    if (Settings::debug_mode_) {
+        target.draw(visual_rectangle_, states);
+        target.draw(visual_top_circle_, states);
+        //target.draw(visual_bottom_circle_, states);
+        target.draw(visual_grounded_, states);
+        target.draw(visual_head_, states);
+        target.draw(visual_core_, states);
+    }
 }
 
 void Character::SetGameIsRunningFalse() {
@@ -334,24 +338,26 @@ void Character::SetupDebugVisual() {
     // Rectangle
     visual_rectangle_.setSize({width_, height_});
     visual_rectangle_.setOrigin({width_/2, height_/2});
+    visual_rectangle_.setFillColor(sf::Color(255, 255, 255, 126));
 
     // Circles
     visual_top_circle_.setRadius(width_/2);
     visual_top_circle_.setOrigin({width_/2, width_/2});
+    visual_top_circle_.setFillColor(sf::Color(255, 255, 255, 126));
 
     // Sensor
     // grounded_
     visual_grounded_.setSize({(grounded_width_), (grounded_height_)});
     visual_grounded_.setOrigin({(grounded_width_/2), (grounded_height_/2)});
-    visual_grounded_.setFillColor(sf::Color::Red);
+    visual_grounded_.setFillColor(sf::Color(255, 0, 0, 126));
     // head_
     visual_head_.setSize({(head_width_), (head_height_)});
     visual_head_.setOrigin({(head_width_/2), (head_height_/2)});
-    visual_head_.setFillColor(sf::Color::Red);
+    visual_head_.setFillColor(sf::Color(255, 0, 0, 126));
     // core_
     visual_core_.setSize({(jump_detector_width_), (jump_detector_height_)});
     visual_core_.setOrigin({(jump_detector_width_/2), (jump_detector_height_/2)});
-    visual_core_.setFillColor(sf::Color::Magenta);
+    visual_core_.setFillColor(sf::Color(255, 100, 255, 126));
 
 //     visual_bottom_circle_.setRadius(width_/2);
 //     visual_bottom_circle_.setOrigin({width_/2, width_/2});

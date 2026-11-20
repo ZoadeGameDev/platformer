@@ -8,6 +8,7 @@
 #include <SFML/Graphics.hpp>
 #include <print>
 #include "constants.h"
+#include "settings.h"
 #include "sensor.h"
 
 
@@ -84,7 +85,6 @@ private:
     float death_detector_offset_y_;
     // Visuals
     // Debug Visuals
-    bool show_debug_visuals_ = true;
     sf::RectangleShape visual_rectangle_;
     sf::CircleShape visual_top_circle_;
     sf::CircleShape visual_bottom_circle_;
