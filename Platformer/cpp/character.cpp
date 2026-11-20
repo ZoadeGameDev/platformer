@@ -152,7 +152,7 @@ void Character::CharacterStates(double dt) {
             // FALLING
             b2Body_SetGravityScale(body_, 2.5f);
         }
-        else if (current_y_vel > 0.1f && (!sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Space) && !sf::Joystick::isButtonPressed(0, 0))) {
+        else if (!(current_y_vel > 0.1f || (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Space) || sf::Joystick::isButtonPressed(0, 0)))) {
             // CANCEL CURRENT JUMP
             b2Body_SetGravityScale(body_, 3.0f);
         }
