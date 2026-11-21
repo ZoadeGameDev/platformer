@@ -17,6 +17,8 @@ public:
 
     bool CheckBool();
 
+    void SetBool(bool boolean);
+
 private:
     // Sensor
     Sensor flag_;

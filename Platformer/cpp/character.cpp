@@ -6,6 +6,9 @@
 // Public
 // We enter the width and the height in pixels (for ease of use) and then convert it into meters
 void Character::Setup(b2WorldId& world, b2Vec2 position, float width, float height){
+    if (!texture_.loadFromFile("../../Assets/Images/guy1.png")) {
+        std::println("no texture");
+    }
     // Physics
     // variables setup
     width_ = width;
@@ -81,7 +84,7 @@ void Character::Setup(b2WorldId& world, b2Vec2 position, float width, float heig
     flag_detector_.Setup(body_, flag_detector_width_, (flag_detector_height_), 0, flag_detector_offset_y_, "flag_detector_");
     // death_detector_
     death_detector_.Setup(body_, death_detector_width_, (death_detector_height_), 0, death_detector_offset_y_, "death_detector_");
-    SetupDebugVisual();
+    SetupVisual();
 }
 
 void Character::ChangeCheckPointPosition(float x, float y) {
@@ -94,6 +97,7 @@ void Character::UpdateVisuals() {
     sf::Vector2f newPosition;
     newPosition.x = Conversion::Pixels(b2Body_GetPosition(body_).x);
     newPosition.y = 1200 - Conversion::Pixels(b2Body_GetPosition(body_).y);
+    visual_character_.setPosition(newPosition);
     // Debug Visual
     // Put the shapes togethers to form our visuals
     visual_rectangle_.setPosition(newPosition);
@@ -317,6 +321,7 @@ void Character::SubstractVelocity(std::optional<float> velocity_x, std::optional
 
 
 void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const {
+    target.draw(visual_character_, states);
     // Debug
     if (Settings::debug_mode_) {
         target.draw(visual_rectangle_, states);
@@ -334,7 +339,11 @@ void Character::SetGameIsRunningFalse() {
 
 // Private
 // Create the generals visuals shapes
-void Character::SetupDebugVisual() {
+void Character::SetupVisual() {
+    visual_character_.setSize({width_, height_ + width_/2});
+    visual_character_.setOrigin({width_/2, (height_ + width_)/2});
+    visual_character_.setTexture(&texture_);
+    // Debug
     // Rectangle
     visual_rectangle_.setSize({width_, height_});
     visual_rectangle_.setOrigin({width_/2, height_/2});

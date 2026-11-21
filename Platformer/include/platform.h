@@ -6,6 +6,7 @@
 #define PLATFORMER_PLATFORM_BLOCK_H
 #include <box2d/box2d.h>
 #include <SFML/Graphics.hpp>
+#include <print>
 #include "constants.h"
 #include "settings.h"
 #include "sensor.h"
@@ -28,6 +29,9 @@ protected:
     float width_;
     float height_;
     // Visuals
+    sf::Texture texture_;
+    sf::RectangleShape visual_;
+    // Debug Visuals
     sf::RectangleShape debug_visual_;
 private:
     // Sensor

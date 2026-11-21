@@ -28,6 +28,10 @@ Flag flag2;
 WinZone win_zone;
 Character character;
 
+sf::Texture background_texture;
+sf::RectangleShape background_shape;
+
+
 void Game::BeginSetup() {
     // Window Setup
     window.create(sf::VideoMode({2000, 1200}), "Platformer", sf::Style::Default);
@@ -51,23 +55,32 @@ void Game::BeginSetup() {
     platform3.Setup(world_, {Conversion::Meters(850), Conversion::Meters(750)}, 200.f, 60.f);
     platform4.Setup(world_, {Conversion::Meters(250), Conversion::Meters(700)}, 400.f, 100.f);
     // jump stars
-    jump_star1.Setup(world_, {Conversion::Meters(675), Conversion::Meters(230)}, 30.f, 30.f);
-    jump_star2.Setup(world_, {Conversion::Meters(1025), Conversion::Meters(230)}, 30.f, 30.f);
-    jump_star3.Setup(world_, {Conversion::Meters(1350), Conversion::Meters(855)}, 30.f, 30.f);
+    jump_star1.Setup(world_, {Conversion::Meters(675), Conversion::Meters(230)}, 40.f, 40.f);
+    jump_star2.Setup(world_, {Conversion::Meters(1025), Conversion::Meters(230)}, 40.f, 40.f);
+    jump_star3.Setup(world_, {Conversion::Meters(1350), Conversion::Meters(855)}, 40.f, 40.f);
     // pass through platforms
     pass_platform1.Setup(world_, {Conversion::Meters(1800), Conversion::Meters(385)}, 250.f, 10.f);
     pass_platform2.Setup(world_, {Conversion::Meters(1800), Conversion::Meters(505)}, 250.f, 10.f);
     pass_platform3.Setup(world_, {Conversion::Meters(1800), Conversion::Meters(625)}, 250.f, 10.f);
     pass_platform4.Setup(world_, {Conversion::Meters(1800), Conversion::Meters(745)}, 250.f, 10.f);
     // flag
-    flag1.Setup(world_, {Conversion::Meters(200), Conversion::Meters(250)}, 25.f, 25.f);
-    flag2.Setup(world_, {Conversion::Meters(1875), Conversion::Meters(800)}, 25.f, 25.f);
+    flag1.Setup(world_, {Conversion::Meters(200), Conversion::Meters(250)}, 35.f, 35.f);
+    flag2.Setup(world_, {Conversion::Meters(1875), Conversion::Meters(800)}, 35.f, 35.f);
+    flag1.SetBool(true);
     // win zone
     win_zone.Setup(world_, {Conversion::Meters(150), Conversion::Meters(800)}, 35.f, 35.f);
     // character
     character.Setup(world_, {Conversion::Meters(325), Conversion::Meters(600/2)}, 50.f, 50.f);
 
-
+    // Setup Background
+    if (!background_texture.loadFromFile("../../Assets/Background.png")) {
+        std::println("no texture");
+    }
+    background_shape.setSize({2000, 1200});
+    background_shape.setOrigin({2000/2, (1200)/2});
+    background_shape.setPosition({2000/2, (1200)/2});
+    background_shape.setFillColor(sf::Color(255,255,255,225));
+    background_shape.setTexture(&background_texture);
 }
 
 void Game::Loop() {
@@ -125,7 +138,8 @@ void Game::Loop() {
 
 
         // SHOW ALL VISUALS
-        window.clear(sf::Color::Black);
+        window.clear(sf::Color(255,255,255));
+        window.draw(background_shape);
         window.draw(death_zone1);
         window.draw(death_zone2);
         window.draw(death_zone3);

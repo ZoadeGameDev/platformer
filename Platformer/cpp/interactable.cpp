@@ -12,14 +12,10 @@ void Interactable::Setup(b2WorldId& world, b2Vec2 position, float width, float h
     b2BodyDef def = b2DefaultBodyDef();
     def.type =  b2_staticBody;
     def.position = position; // Initial position
-    body_ = b2CreateBody(world, &def);
-
-    // No material as this is only a holder for a sensor
-    // Same goes for shape
-
     // Only visuals, since sensor doesn't do that on its own
     debug_visual_.setSize({width_, height_});
     debug_visual_.setOrigin({width_/2, height_/2});
+    body_ = b2CreateBody(world, &def);
 
     SetupSensors();
 }
@@ -28,6 +24,8 @@ void Interactable::UpdateVisuals() {
     sf::Vector2f newPosition;
     newPosition.x = Conversion::Pixels(b2Body_GetPosition(body_).x);
     newPosition.y = 1200 - Conversion::Pixels(b2Body_GetPosition(body_).y);
+    // Visuals
+    visual_.setPosition(newPosition);
     // Debug Visual
     // Put the shapes togethers to form our visuals
     debug_visual_.setPosition(newPosition);
@@ -38,6 +36,7 @@ void Interactable::SetupSensors() {
 }
 
 void Interactable::draw(sf::RenderTarget &target, sf::RenderStates states) const {
+    target.draw(visual_);
     // Debug
     if (Settings::debug_mode_){
     target.draw(debug_visual_, states);

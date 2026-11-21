@@ -33,7 +33,7 @@ private:
     void AddVelocity(std::optional<float> velocity_x, std::optional<float> velocity_y, float max_velocity_x, float max_velocity_y);
     void SubstractVelocity(std::optional<float> velocity_x, std::optional<float> velocity_y, float max_velocity_x, float max_velocity_y);
 
-    void SetupDebugVisual();
+    void SetupVisual();
 
     // Physics
     b2BodyId body_;
@@ -84,6 +84,8 @@ private:
     float death_detector_height_;
     float death_detector_offset_y_;
     // Visuals
+    sf::Texture texture_;
+    sf::RectangleShape visual_character_;
     // Debug Visuals
     sf::RectangleShape visual_rectangle_;
     sf::CircleShape visual_top_circle_;

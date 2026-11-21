@@ -37,18 +37,30 @@ void Platform::UpdateVisuals() {
     sf::Vector2f newPosition;
     newPosition.x = Conversion::Pixels(b2Body_GetPosition(body_).x);
     newPosition.y = 1200 - Conversion::Pixels(b2Body_GetPosition(body_).y);
+    // Visuals
+    visual_.setPosition(newPosition);
     // Debug Visual
     // Put the shapes togethers to form our visuals
-   debug_visual_.setPosition(newPosition);
+    debug_visual_.setPosition(newPosition);
     //visual_bottom_circle_.setPosition({newPosition.x, newPosition.y + height_/2});
 }
 
 void Platform::SetupSensors() {
     ground_.Setup(body_, width_, height_, 0, 0, "ground_");
+    // Visual
+    // Setup Platform
+    if (!texture_.loadFromFile("../../Assets/Images/boxv2.png")) {
+        std::println("no texture");
+    }
+    visual_.setSize({width_, height_});
+    visual_.setOrigin({width_/2, height_/2});
+    visual_.setTexture(&texture_);
+    // Debug Visual
     debug_visual_.setFillColor(sf::Color(255, 255, 255, 126));
 }
 
 void Platform::draw(sf::RenderTarget &target, sf::RenderStates states) const {
+    target.draw(visual_);
     // Debug
     if (Settings::debug_mode_) {
         target.draw(debug_visual_, states);
