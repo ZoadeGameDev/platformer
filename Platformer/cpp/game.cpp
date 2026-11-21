@@ -7,6 +7,7 @@
 // public
 b2WorldDef def = b2DefaultWorldDef();
 sf::Clock watch;
+sf::Clock total_time;
 DeathZone death_zone1;
 DeathZone death_zone2;
 DeathZone death_zone3;
@@ -31,6 +32,8 @@ Character character;
 sf::Texture background_texture;
 sf::RectangleShape background_shape;
 
+sf::Font font;
+sf::Text text(font);
 
 void Game::BeginSetup() {
     // Window Setup
@@ -76,6 +79,16 @@ void Game::BeginSetup() {
     if (!background_texture.loadFromFile("../../Assets/Background.png")) {
         std::println("no texture");
     }
+    // Setup Text
+    if (!font.openFromFile("../../Assets/DirtyEnough-Regular.ttf")) {
+        std::println("no font");
+    }
+    text.setCharacterSize(120);
+    text.setFillColor(sf::Color::Transparent);
+    text.setOrigin({240, (240)});
+    text.setPosition({1200, (1210/1.75)});
+
+
     background_shape.setSize({2000, 1200});
     background_shape.setOrigin({2000/2, (1200)/2});
     background_shape.setPosition({2000/2, (1200)/2});
@@ -102,6 +115,11 @@ void Game::Loop() {
         // SENSOR EVENTS
         if (win_zone.CheckBool()) {
             character.SetGameIsRunningFalse();
+            sf::Time time = total_time.getElapsedTime();
+            total_time.stop();
+            text.setLineAlignment(sf::Text::LineAlignment::Center);
+            text.setFillColor(sf::Color::Black);
+            text.setString("You Arrived! \n You took: " + std::to_string(int(time.asSeconds())) + " seconds");
         }
         if (flag2.CheckBool()) {
             character.ChangeCheckPointPosition(flag2.GetPositionX(), flag2.GetPositionY());
@@ -160,6 +178,7 @@ void Game::Loop() {
         window.draw(flag2);
         window.draw(win_zone);
         window.draw(character);
+        window.draw(text);
         window.display();
     }
 }

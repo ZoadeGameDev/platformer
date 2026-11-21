@@ -31,7 +31,7 @@ private:
     // Variables
     // Window variables
     sf::RenderWindow window;
-    int frame_rate_ = 60; // Technically frame_rate_limit but oh well...
+    int frame_rate_ = Settings::fps_; // Technically frame_rate_limit but oh well...
     // World variables
     b2WorldId world_;
 

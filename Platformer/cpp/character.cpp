@@ -17,7 +17,7 @@ void Character::Setup(b2WorldId& world, b2Vec2 position, float width, float heig
     // Sensor grounded_
     grounded_width_ = width_/1.1f;
     grounded_height_ = width_/4.0f;
-    grounded_offset_y_ = height_/2; // (Problem, the sensor doesn't always work, i try to fix it via offset but it doesn't work)
+    grounded_offset_y_ = height_/2; // (Problem, the sensor doesn't always work, i try to fix it via offset but it doesn't work)a
     // Sensor head_
     // We usually keep it small to be safe and not cancel all collision (values at the right)
     // BUT for the game it's working with big one so... might as well use it
@@ -126,6 +126,15 @@ void Character::CharacterStates(double dt) {
         } else {
             // by default the x velocity is at 0
             SetVelocity(0,std::nullopt );
+        }
+
+        // I WANNA GO THROUGH PLATFORMS
+        const float joystick_y = sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::Y); // For Controller
+        if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Down)) || joystick_x > 20.f) {
+            Settings::want_go_down_ = true;
+        }
+        else {
+            Settings::want_go_down_ = false;
         }
 
         // Buffer

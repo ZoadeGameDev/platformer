@@ -6,11 +6,15 @@
 #define PLATFORMER_CONTACTS_H
 #include <box2d/box2d.h>
 #include <print>
+#include "settings.h"
 #include "sensor.h"
 
 bool no_collision = false;
 
 bool SolidContact(b2ShapeId shapeIdA, b2ShapeId shapeIdB, b2Manifold* manifold, void* context) {
+    if (Settings::i_am_on_passable_platforms_ && Settings::want_go_down_) {
+        no_collision = true;
+    }
     return !no_collision;
 }
 
@@ -60,6 +64,14 @@ void SensorsContact(b2WorldId worldId) {
                 b->HasTouched  = false;
             }
             else if ((a->name_ == "pass_" && b->name_ == "grounded_") ||(a->name_ == "ground_" && b->name_ == "grounded_")) {
+                if (a->name_ == "pass_") {
+                    Settings::i_am_on_passable_platforms_ = true;
+                    std::println("Im so AM passable rn");
+                }
+                else {
+                    Settings::i_am_on_passable_platforms_ = false;
+                    std::println("Im so NOT passable rn");
+                }
                 no_collision = false;
                 b->HasTouched  = true;
             }
